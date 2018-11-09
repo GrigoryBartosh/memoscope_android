@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +68,20 @@ public class MainActivity extends AppCompatActivity {
         fromDateButton.setOnClickListener(new DateButtonClickListener());
         toDateButton.setOnClickListener(new DateButtonClickListener());
 
+
+        AppBarLayout appBarLayout = findViewById(R.id.appbar);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        if (behavior == null) {
+            params.setBehavior(new AppBarLayout.Behavior());
+            behavior = (AppBarLayout.Behavior) params.getBehavior();
+        }
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                return false;
+            }
+        });
 
         adapter = new CustomAdapter(this);
         Log.d("MyListener", "" + adapter.getCount());
