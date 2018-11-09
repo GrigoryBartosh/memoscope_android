@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 View options = (View)findViewById(R.id.option_layout);
-                options.setVisibility(View.GONE);
+                int vis = hasFocus ? View.VISIBLE : View.GONE;
+                options.setVisibility(vis);
             }
         });
         mSearchView.setQueryHint("Search");
