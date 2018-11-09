@@ -1,4 +1,7 @@
 <resources>
+    <string name="open_vk">open vk</string>
+    <string name="share">share</string>
+    <string name="like">like</string>
     <string name="app_name">Memoscope</string>
     <integer name="com_vk_sdk_AppId">6746791</integer>
 </resources>

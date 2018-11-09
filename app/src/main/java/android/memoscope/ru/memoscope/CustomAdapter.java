@@ -1,6 +1,7 @@
 package android.memoscope.ru.memoscope;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class CustomAdapter extends BaseAdapter {
         }
 
         JSONObject post = posts.get(position);
+        //Log.d("CustomAdapter", post.toString());
 
         TextView textView = rowView.findViewById(R.id.text_view);
         try {
@@ -61,12 +63,14 @@ public class CustomAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-        if (post.has("attatchments")) {
+        if (post.has("attachments")) {
             try {
-                JSONObject attatchment = post.getJSONArray("attatchments").getJSONObject(0);
-                if (attatchment.has("photo")) {
+                JSONObject attachment = post.getJSONArray("attachments").getJSONObject(0);
+                Log.d("CustomAdapter", attachment.toString());
+                if (attachment.has("photo")) {
                     ImageView imageView = rowView.findViewById(R.id.image_view);
-                    String url = getBestQualityURL(attatchment.getJSONObject("photo"));
+                    String url = getBestQualityURL(attachment.getJSONObject("photo"));
+                    Log.d("CustomAdapter", url);
                     Picasso
                             .get()
                             .load(url)
