@@ -5,5 +5,12 @@
     <string name="app_name">Memoscope</string>
     <string name="to">ПО</string>
     <string name="from">С</string>
+
+    <string-array name="filter_options">
+        <item>Все</item>
+        <item>Мои</item>
+        <item>Выбор</item>
+    </string-array>
+
     <integer name="com_vk_sdk_AppId">6746791</integer>
 </resources>

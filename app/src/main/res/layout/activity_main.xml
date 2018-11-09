@@ -54,7 +54,6 @@
             <Button
                 style="@style/DateButton"
                 android:id="@+id/from_date"
-                android:text="02/11/2018"
                 android:layout_toEndOf="@id/from_text"
                 android:layout_toRightOf="@id/from_text"/>
 
@@ -66,10 +65,16 @@
                 android:layout_toRightOf="@id/from_date"/>
             <Button
                 style="@style/DateButton"
-                android:text="09/11/2018"
                 android:id="@+id/to_date"
                 android:layout_toEndOf="@id/to_text"
                 android:layout_toRightOf="@id/to_text"/>
+
+            <Spinner
+                style="@style/FilterSpinner"
+                android:layout_toEndOf="@id/to_date"
+                android:layout_toRightOf="@id/to_date"
+                android:id="@+id/filter_spinner"
+                android:entries="@array/filter_options"/>
 
         </RelativeLayout>
 

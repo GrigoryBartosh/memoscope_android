@@ -1,18 +1,14 @@
 package android.memoscope.ru.memoscope;
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,9 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -36,17 +30,19 @@ import com.vk.sdk.api.VKResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.text.ParseException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
     private CustomAdapter adapter;
+
+    private List<String> pubList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -66,7 +62,10 @@ public class MainActivity extends AppCompatActivity {
         Button fromDateButton = findViewById(R.id.from_date);
         Button toDateButton = findViewById(R.id.to_date);
         fromDateButton.setOnClickListener(new DateButtonClickListener());
+        String currentDate = currentDateString();
+        fromDateButton.setText(currentDate);
         toDateButton.setOnClickListener(new DateButtonClickListener());
+        toDateButton.setText(currentDate);
 
 
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
@@ -87,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MyListener", "" + adapter.getCount());
         VKParameters parameters = VKParameters.from(VKApiConst.OWNER_ID, -29534144, VKApiConst.COUNT, 100, VKApiConst.EXTENDED, 1);
         VKApi.wall().get(parameters).executeSyncWithListener(new MyListener());
+    }
+
+    private String currentDateString() {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", getCurrentLocale(this));
+        return dateFormat.format(date);
     }
 
     class MyListener extends VKRequest.VKRequestListener {
@@ -152,69 +157,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        private Button firstButton;
-        private Button secondButton;
-        private Button button;
-        private boolean pressedFirst;
-        private Locale locale;
-
-        public void setButtons(Button firstButton, Button secondButton, boolean pressedFirst) {
-            this.firstButton = firstButton;
-            this.secondButton = secondButton;
-            this.pressedFirst = pressedFirst;
-            this.button = pressedFirst ? firstButton : secondButton;
-        }
-
-        public void setLocale(Locale locale) {
-            this.locale = locale;
-        }
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            String dayStr = day < 10? "0" + day : "" + day;
-            month++;
-            String monthStr = month < 10? "0" + month : "" + month;
-
-            String resultDate = dayStr + "/" + monthStr + "/" + year;
-            button.setText(resultDate);
-            if (overlappingDates(firstButton.getText(), secondButton.getText())) {
-                if (pressedFirst)
-                    secondButton.setText(resultDate);
-                else
-                    firstButton.setText(resultDate);
-            }
-            //@SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            //button.setText(format.format(new Date(year, month, day)));
-        }
-
-
-
-        private boolean overlappingDates(CharSequence d1, CharSequence d2) {
-            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy", locale);
-            try {
-                Date dateFrom = fmt.parse((String) d1);
-                Date dateTo = fmt.parse((String) d2);
-                return dateTo.before(dateFrom);
-            } catch (ParseException e) {
-                return false;
-            }
-        }
     }
 
     private Locale getCurrentLocale(Context context){
