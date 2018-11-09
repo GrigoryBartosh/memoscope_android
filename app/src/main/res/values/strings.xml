@@ -3,5 +3,7 @@
     <string name="share">share</string>
     <string name="like">like</string>
     <string name="app_name">Memoscope</string>
+    <string name="to">ПО</string>
+    <string name="from">С</string>
     <integer name="com_vk_sdk_AppId">6746791</integer>
 </resources>

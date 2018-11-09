@@ -45,10 +45,31 @@
             android:padding="@dimen/activity_horizontal_margin"
             android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Search params go here"/>
+            <android.widget.TextView
+                style="@style/DateText"
+                android:text="@string/from"
+                android:id="@+id/from_text"/>
+
+            <Button
+                style="@style/DateButton"
+                android:id="@+id/from_date"
+                android:text="02/11/2018"
+                android:layout_toEndOf="@id/from_text"
+                android:layout_toRightOf="@id/from_text"/>
+
+            <android.widget.TextView
+                style="@style/DateText"
+                android:text="@string/to"
+                android:id="@+id/to_text"
+                android:layout_toEndOf="@id/from_date"
+                android:layout_toRightOf="@id/from_date"/>
+            <Button
+                style="@style/DateButton"
+                android:text="09/11/2018"
+                android:id="@+id/to_date"
+                android:layout_toEndOf="@id/to_text"
+                android:layout_toRightOf="@id/to_text"/>
+
         </RelativeLayout>
 
     </android.support.design.widget.AppBarLayout>

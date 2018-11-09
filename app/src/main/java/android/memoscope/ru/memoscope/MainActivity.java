@@ -1,7 +1,13 @@
 package android.memoscope.ru.memoscope;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -24,6 +33,13 @@ import com.vk.sdk.api.VKResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
         NestedScrollView scrollView = findViewById(R.id.scrollView);
         listView = scrollView.findViewById(R.id.list_view);
         listView.setNestedScrollingEnabled(true);
+
+        Button fromDateButton = findViewById(R.id.from_date);
+        Button toDateButton = findViewById(R.id.to_date);
+        fromDateButton.setOnClickListener(new DateButtonClickListener());
+        toDateButton.setOnClickListener(new DateButtonClickListener());
+
 
         adapter = new CustomAdapter(this);
         Log.d("MyListener", "" + adapter.getCount());
@@ -114,5 +136,91 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        private Button firstButton;
+        private Button secondButton;
+        private Button button;
+        private boolean pressedFirst;
+        private Locale locale;
+
+        public void setButtons(Button firstButton, Button secondButton, boolean pressedFirst) {
+            this.firstButton = firstButton;
+            this.secondButton = secondButton;
+            this.pressedFirst = pressedFirst;
+            this.button = pressedFirst ? firstButton : secondButton;
+        }
+
+        public void setLocale(Locale locale) {
+            this.locale = locale;
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            String dayStr = day < 10? "0" + day : "" + day;
+            month++;
+            String monthStr = month < 10? "0" + month : "" + month;
+
+            String resultDate = dayStr + "/" + monthStr + "/" + year;
+            button.setText(resultDate);
+            if (overlappingDates(firstButton.getText(), secondButton.getText())) {
+                if (pressedFirst)
+                    secondButton.setText(resultDate);
+                else
+                    firstButton.setText(resultDate);
+            }
+            //@SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            //button.setText(format.format(new Date(year, month, day)));
+        }
+
+
+
+        private boolean overlappingDates(CharSequence d1, CharSequence d2) {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy", locale);
+            try {
+                Date dateFrom = fmt.parse((String) d1);
+                Date dateTo = fmt.parse((String) d2);
+                return dateTo.before(dateFrom);
+            } catch (ParseException e) {
+                return false;
+            }
+        }
+    }
+
+    private Locale getCurrentLocale(Context context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else{
+            return context.getResources().getConfiguration().locale;
+        }
+    }
+
+    public class DateButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Button button = (Button) v;
+
+            Button fromButton = findViewById(R.id.from_date);
+            Button toButton = findViewById(R.id.to_date);
+
+            DatePickerFragment newFragment = new DatePickerFragment();
+            newFragment.setButtons(fromButton, toButton, button.getId() == fromButton.getId());
+            newFragment.setLocale(getCurrentLocale(getApplicationContext()));
+            newFragment.show(getSupportFragmentManager(), "date");
+        }
     }
 }
