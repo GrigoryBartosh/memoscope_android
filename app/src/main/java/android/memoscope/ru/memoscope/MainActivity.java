@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -15,8 +16,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -33,6 +38,7 @@ import org.json.JSONException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private CustomAdapter adapter;
 
-    private List<String> pubList = new ArrayList<>();
+    private List<String> supportedPubList = Arrays.asList("1", "2", "3", "4");//new ArrayList<>();
+    private List<String> pubList = new ArrayList<>(supportedPubList);
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -67,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         toDateButton.setOnClickListener(new DateButtonClickListener());
         toDateButton.setText(currentDate);
 
+
+        Spinner filterSpinner = findViewById(R.id.filter_spinner);
+        filterSpinner.setOnItemSelectedListener(new FilterSelectListener());
 
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
@@ -180,5 +191,41 @@ public class MainActivity extends AppCompatActivity {
             newFragment.setLocale(getCurrentLocale(getApplicationContext()));
             newFragment.show(getSupportFragmentManager(), "date");
         }
+    }
+
+    public class FilterSelectListener implements AdapterView.OnItemSelectedListener{
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String selected = String.valueOf(((TextView)view).getText());
+            switch (selected) {
+                case "Все": {
+                    pubList = new ArrayList<>(supportedPubList);
+                    break;
+                }
+                case "Мои": {
+                    pubList = getMySubs();
+                    break;
+                }
+                case "Выбор": {
+                    FragmentManager fm = getSupportFragmentManager();
+                    CustomPubsDialogFragment pubsDialogFragment = CustomPubsDialogFragment.newInstance("Some Title");
+                    pubsDialogFragment.setPubs(pubList, supportedPubList);
+                    pubsDialogFragment.show(fm, "fragment_pubs");
+                    break;
+                }
+
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    }
+
+    private List<String> getMySubs() {
+        List<String> userSubs = Arrays.asList("1", "3");
+        userSubs.retainAll(supportedPubList);
+        return userSubs;
     }
 }
