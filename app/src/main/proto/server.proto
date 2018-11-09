@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_package = "ru.memoscope";
+option java_outer_classname = "ServerProto";
+
+message PostInfo {
+	int64 postId = 1;
+	int64 groupId = 2;
+}
+
+
+message FindPostsRequest {
+	string text = 1;
+	repeated int64 groupIds = 2;
+	int64 timeFrom = 3;
+	int64 timeTo = 4;
+}
+
+message FindPostsResponse {
+	repeated PostInfo posts = 1;
+}
+
+message GetGroupsRequest {
+
+}
+
+message GetGroupsResponse {
+	repeated int64 groupIds = 1;
+}
+
+service Server {
+	rpc FindPosts(FindPostsRequest) returns (FindPostsResponse) {}
+	rpc GetGroups(GetGroupsRequest) returns (GetGroupsResponse) {}
+}

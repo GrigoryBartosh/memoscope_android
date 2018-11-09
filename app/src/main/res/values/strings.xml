@@ -4,4 +4,6 @@
     <string name="like">like</string>
     <string name="app_name">Memoscope</string>
     <integer name="com_vk_sdk_AppId">6746791</integer>
+    <string name="host">172.20.36.186</string>
+    <integer name="port">8801</integer>
 </resources>

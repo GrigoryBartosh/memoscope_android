@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
 
 android {
     compileSdkVersion 28
@@ -14,6 +15,33 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java', 'app/build/generated/source/proto/debug/java',
+                    'app/build/generated/source/proto/debug/grpc'
+        }
+    }
+}
+
+protobuf {
+    protoc { artifact = 'com.google.protobuf:protoc:3.5.1-1' }
+    plugins {
+        javalite { artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0" }
+        grpc { artifact = 'io.grpc:protoc-gen-grpc-java:1.15.0' // CURRENT_GRPC_VERSION
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                javalite {}
+                grpc { // Options added to --grpc_out
+                    option 'lite' }
+            }
         }
     }
 }

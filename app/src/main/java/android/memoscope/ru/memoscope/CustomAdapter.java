@@ -22,19 +22,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class CustomAdapter extends BaseAdapter {
 
-    private ArrayList<JSONObject> posts = new ArrayList<>();
+    private List<JSONObject> posts;
     private SparseArray<JSONObject> groups = new SparseArray<>();
     private LayoutInflater inflater;
 
-    CustomAdapter(Context context) {
+    CustomAdapter(Context context, List<JSONObject> posts) {
+        this.posts = posts;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    public void add(JSONObject post) {
-        posts.add(post);
     }
 
     public void addGroup(JSONObject group) {
@@ -44,6 +42,10 @@ public class CustomAdapter extends BaseAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void clear() {
+        posts.clear();
     }
 
     @Override
@@ -63,6 +65,9 @@ public class CustomAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (position >= getCount()) {
+            return convertView;
+        }
         View rowView = convertView;
         if (rowView == null) {
             rowView = inflater.inflate(R.layout.list_item, parent, false);
@@ -143,10 +148,6 @@ public class CustomAdapter extends BaseAdapter {
     private String formatTime(long time) {
         DateFormat format = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
         return format.format(new Date(time * 1000));
-    }
-
-    public void clear() {
-        posts.clear();
     }
 }
 
