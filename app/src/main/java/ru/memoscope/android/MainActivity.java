@@ -1,7 +1,6 @@
 package ru.memoscope.android;
 
 import android.content.Context;
-import android.memoscope.ru.memoscope.R;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;

@@ -1,7 +1,7 @@
 package ru.memoscope.android.recyclerview;
 
 import android.content.Context;
-import android.memoscope.ru.memoscope.R;
+import ru.memoscope.android.R;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +15,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import static android.memoscope.ru.memoscope.utils.Utils.formatTime;
-import static android.memoscope.ru.memoscope.utils.Utils.getBestQualityURL;
+import static ru.memoscope.android.utils.Utils.formatTime;
+import static ru.memoscope.android.utils.Utils.getBestQualityURL;
 
 public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
 

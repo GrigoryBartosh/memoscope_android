@@ -1,6 +1,6 @@
 package ru.memoscope.android.recyclerview;
 
-import android.memoscope.ru.memoscope.R;
+import ru.memoscope.android.R;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
