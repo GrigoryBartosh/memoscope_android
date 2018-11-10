@@ -74,6 +74,7 @@
 
     <ToggleButton
         style="@style/ListButton"
+        android:id="@+id/like_button"
         android:layout_below="@id/image_view"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
