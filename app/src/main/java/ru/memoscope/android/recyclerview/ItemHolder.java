@@ -2,6 +2,8 @@ package ru.memoscope.android.recyclerview;
 
 import ru.memoscope.android.R;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -21,6 +23,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ru.memoscope.android.utils.CircleTransform;
+import ru.memoscope.android.utils.Utils;
+
+import static ru.memoscope.android.utils.Utils.openLink;
 
 public class ItemHolder extends RecyclerView.ViewHolder {
     private List<String> urls;
@@ -32,6 +37,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final Button prevButton;
     private final Button nextButton;
+    private final Button openVKButton;
     private Context context;
 
     public ItemHolder(@NonNull View itemView, Context context) {
@@ -44,6 +50,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
         imageView = itemView.findViewById(R.id.image_view);
         prevButton = itemView.findViewById(R.id.prev_button);
         nextButton = itemView.findViewById(R.id.next_button);
+        openVKButton = itemView.findViewById(R.id.open_vk_button);
         prevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +108,16 @@ public class ItemHolder extends RecyclerView.ViewHolder {
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(imageView);
 
+    }
+
+    public void setVKPostId(String postId) {
+        final String url = "http://vk.com/wall" + postId;
+        openVKButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openLink((Activity) context, url);
+            }
+        });
     }
 
     public void setIconViewPicture(String url) {
