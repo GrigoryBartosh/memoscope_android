@@ -48,7 +48,7 @@
 
     <Button
         android:id="@+id/prev_button"
-        style="@style/LRButton"
+        style="@style/ListButton"
         android:layout_below="@id/image_view"
         android:layout_alignParentStart="true"
         android:background="@drawable/ic_chevron_left_black_24dp" />
@@ -66,23 +66,17 @@
     </LinearLayout>
     -->
     <ImageButton
+        style="@style/ListButton"
         android:id="@+id/open_vk_button"
-        android:layout_width="55dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
         android:background="@drawable/ic_vklogo"
         android:layout_below="@id/image_view"
         android:layout_centerInParent="true"/>
 
     <ToggleButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        style="@style/ListButton"
         android:layout_below="@id/image_view"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_toLeftOf="@id/open_vk_button"
         android:background="@drawable/like_button"
         android:focusable="false"
@@ -91,22 +85,20 @@
         android:textOn="" />
 
     <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        style="@style/ListButton"
         android:layout_below="@id/image_view"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_toRightOf="@id/open_vk_button"
         android:background="@drawable/share_button"/>
 
     <Button
+        style="@style/ListButton"
         android:id="@+id/next_button"
-        style="@style/LRButton"
         android:layout_below="@id/image_view"
         android:layout_alignParentEnd="true"
+
         android:background="@drawable/ic_chevron_right_black_24dp" />
 
 </RelativeLayout>
