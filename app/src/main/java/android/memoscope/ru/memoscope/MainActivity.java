@@ -42,24 +42,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
-    private final String URL = "https://res.cloudinary.com/teepublic/image/private/s--tzvoXr7B--/t_Preview/b_rgb:ffffff,c_limit,f_jpg,h_630,q_90,w_630/v1522076329/production/designs/2531350_0.jpg";
-    private final String URL2 = "https://memestatic1.fjcdn.com/comments/Go+meme+man+go+o+m+_64c909e4177142388bed187164a04fa0.jpg";
-    private ArrayList<String> supportedPubList = new ArrayList<>(Arrays.asList("1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4" ));//new ArrayList<>();
-    private ArrayList<String> pubList = new ArrayList<>(supportedPubList);
-    private Map<String, String> pubMap = new HashMap<String, String>() {{
-        put("1", URL);
-        put("2", URL2);
-        put("3", URL);
-        put("4", URL2);
-    }};
+
+    private ArrayList<Pub> supportedPubList = new ArrayList<>();
+    private Set<Integer> pubSet = new HashSet<>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -89,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
         toDateButton.setOnClickListener(new DateButtonClickListener());
         toDateButton.setText(currentDate);
 
+        supportedPubList.add(new Pub(1, "Лентач", "https://pp.userapi.com/c637622/v637622257/5b5bf/xjT2gn-8MU4.jpg"));
+        supportedPubList.add(new Pub(2, "Абстрактные мемы для элиты всех сортов", "https://pp.userapi.com/c637622/v637622257/5b5bf/xjT2gn-8MU4.jpg"));
+
+        pubSet.add(1);
+        pubSet.add(2);
 
         Spinner filterSpinner = findViewById(R.id.filter_spinner);
         filterSpinner.setOnItemSelectedListener(new FilterSelectListener());
@@ -240,17 +237,17 @@ public class MainActivity extends AppCompatActivity {
             String selected = String.valueOf(((TextView)view).getText());
             switch (selected) {
                 case "Все": {
-                    pubList = new ArrayList<>(supportedPubList);
+                    pubSet = new HashSet<>(Arrays.asList(1, 2));
                     break;
                 }
                 case "Мои": {
-                    pubList = getMySubs();
+                    pubSet = getMySubs();
                     break;
                 }
                 case "Выбор": {
                     FragmentManager fm = getSupportFragmentManager();
                     CustomPubsDialogFragment pubsDialogFragment = CustomPubsDialogFragment.newInstance("Some Title");
-                    pubsDialogFragment.setPubs(pubList, supportedPubList, pubMap);
+                    pubsDialogFragment.setPubs(pubSet, supportedPubList);
                     pubsDialogFragment.show(fm, "fragment_pubs");
                     break;
                 }
@@ -262,9 +259,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<String> getMySubs() {
-        ArrayList<String> userSubs = new ArrayList<>(Arrays.asList("1", "3"));
-        userSubs.retainAll(supportedPubList);
-        return userSubs;
+    private Set<Integer> getMySubs() {
+        return new HashSet<>(Arrays.asList(1));
     }
 }

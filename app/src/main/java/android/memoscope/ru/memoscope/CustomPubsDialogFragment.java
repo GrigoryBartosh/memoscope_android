@@ -23,13 +23,11 @@ import android.widget.ListView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 public class CustomPubsDialogFragment extends DialogFragment {
-    private ArrayList<String> pubs;
-    private ArrayList<String> supportedPubList;
-    private Map<String, String> pubUrls = new HashMap<>();
+    private Set<Integer> pubs;
+    private ArrayList<Pub> supportedPubs;
 
     public CustomPubsDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -63,17 +61,16 @@ public class CustomPubsDialogFragment extends DialogFragment {
         ViewGroup.LayoutParams lp = listView.getLayoutParams();
         lp.height = metrics.heightPixels * 7 / 10;
         listView.setLayoutParams(lp);
-        listView.setAdapter(new PubAdapter(getContext(), supportedPubList));
+        listView.setAdapter(new PubAdapter(getContext(), supportedPubs));
     }
 
-    public void setPubs(ArrayList<String> pubList, ArrayList<String> supportedPubList, Map<String, String> urls) {
+    public void setPubs(Set<Integer> pubList, ArrayList<Pub> supportedPubs) {
         pubs = pubList;
-        this.pubUrls = urls;
-        this.supportedPubList = supportedPubList;
+        this.supportedPubs = supportedPubs;
     }
 
-    public class PubAdapter extends ArrayAdapter<String> {
-        public PubAdapter(Context context, ArrayList<String> users) {
+    public class PubAdapter extends ArrayAdapter<Pub> {
+        public PubAdapter(Context context, ArrayList<Pub> users) {
             super(context, 0, users);
         }
 
@@ -82,13 +79,25 @@ public class CustomPubsDialogFragment extends DialogFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.pub_item, parent, false);
             CheckBox box = convertView.findViewById(R.id.box);
-            String pubName = getItem(position);
-            box.setChecked(pubs.contains(pubName));
-            box.setText(pubName);
-            
+            final Pub pub = getItem(position);
+
+            box.setChecked(pubs.contains(pub.getId()));
+            box.setText(pub.getName());
+
+            box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        pubs.add(pub.getId());
+                    } else {
+                        pubs.remove(pub.getId());
+                    }
+                }
+            });
+
             ImageView img = convertView.findViewById(R.id.pub_img);
             Picasso.get()
-                    .load(pubUrls.get(pubName))
+                    .load(pub.getImageURL())
                     .transform(new CircleTransform())
                     .into(img);
 
