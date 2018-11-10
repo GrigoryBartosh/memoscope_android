@@ -53,7 +53,7 @@ public class Network {
                     builder.append(",");
             }
             String posts = builder.toString();
-            Log.d("Network", posts);
+            Log.d("NetworkTag", posts);
             VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
             VKApi.wall()
                     .getById(parameters)
@@ -62,7 +62,7 @@ public class Network {
 
         @Override
         public void onError(Throwable t) {
-
+            Log.d("NetworkTag", "error((");
         }
 
         @Override

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:fitsSystemWindows="true">
-
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -14,10 +14,11 @@
         android:id="@+id/scrollView"
         android:fillViewport="true">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/list_view"/>
+            android:id="@+id/list_view"
+            android:background="@color/vk_grey_color"/>
 
     </android.support.v4.widget.NestedScrollView>
 
