@@ -51,13 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
     private final String URL = "https://res.cloudinary.com/teepublic/image/private/s--tzvoXr7B--/t_Preview/b_rgb:ffffff,c_limit,f_jpg,h_630,q_90,w_630/v1522076329/production/designs/2531350_0.jpg";
-    private ArrayList<String> supportedPubList = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));//new ArrayList<>();
+    private final String URL2 = "https://memestatic1.fjcdn.com/comments/Go+meme+man+go+o+m+_64c909e4177142388bed187164a04fa0.jpg";
+    private ArrayList<String> supportedPubList = new ArrayList<>(Arrays.asList("1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4","1", "2", "3", "4" ));//new ArrayList<>();
     private ArrayList<String> pubList = new ArrayList<>(supportedPubList);
     private Map<String, String> pubMap = new HashMap<String, String>() {{
         put("1", URL);
-        put("2", URL);
+        put("2", URL2);
         put("3", URL);
-        put("4", URL);
+        put("4", URL2);
     }};
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

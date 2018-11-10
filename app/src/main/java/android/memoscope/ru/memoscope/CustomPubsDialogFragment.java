@@ -1,27 +1,26 @@
 package android.memoscope.ru.memoscope;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.memoscope.ru.memoscope.utils.CircleTransform;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +54,15 @@ public class CustomPubsDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
         ListView listView = view.findViewById(R.id.pub_list);
+        ViewGroup.LayoutParams lp = listView.getLayoutParams();
+        lp.height = metrics.heightPixels * 7 / 10;
+        listView.setLayoutParams(lp);
         listView.setAdapter(new PubAdapter(getContext(), supportedPubList));
     }
 
@@ -78,29 +85,13 @@ public class CustomPubsDialogFragment extends DialogFragment {
             String pubName = getItem(position);
             box.setChecked(pubs.contains(pubName));
             box.setText(pubName);
-
-            final LayerDrawable ld = (LayerDrawable) getResources().getDrawable(R.drawable.checkbox_background);
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pain);
-            Drawable customImage = new BitmapDrawable(getResources(), bitmap);
-            Drawable drawable = (Drawable)ld.findDrawableByLayerId(R.id.pub_icon);
-            //ld.setDrawableByLayerId(R.id.pub_icon, customImage);
-            /*Picasso.get()
+            
+            ImageView img = convertView.findViewById(R.id.pub_img);
+            Picasso.get()
                     .load(pubUrls.get(pubName))
                     .transform(new CircleTransform())
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            Drawable customImage = new BitmapDrawable(getResources(), bitmap);
-                            ld.setDrawableByLayerId(R.id.pub_icon, customImage);                            }
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        }
+                    .into(img);
 
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        }
-                    });
-            */
             return convertView;
         }
     }

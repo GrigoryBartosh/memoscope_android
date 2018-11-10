@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/edit_name"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_gravity="center" android:orientation="vertical"  >
+    android:layout_gravity="center" android:orientation="vertical"
+    android:background="@drawable/dialog_bg">
 
 
     <ListView
@@ -10,8 +11,4 @@
         android:id="@+id/pub_list">
     </ListView>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="BACK"/>
 </LinearLayout>
