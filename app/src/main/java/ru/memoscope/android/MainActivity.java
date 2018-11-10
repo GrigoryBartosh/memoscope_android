@@ -148,14 +148,7 @@ public class MainActivity extends AppCompatActivity {
         toDateButton.setOnClickListener(new DateButtonClickListener());
         toDateButton.setText(currentDate);
 
-
-        supportedPubList.add(new Pub(1, "Лентач", "https://pp.userapi.com/c637622/v637622257/5b5bf/xjT2gn-8MU4.jpg"));
-        supportedPubList.add(new Pub(2, "Абстрактные мемы для элиты всех сортов", "https://pp.userapi.com/c637622/v637622257/5b5bf/xjT2gn-8MU4.jpg"));
-
-        pubSet.add(1);
-        pubSet.add(2);
-
-        //initSupportedPubList();
+        initSupportedPubList();
 
         Spinner filterSpinner = findViewById(R.id.filter_spinner);
         filterSpinner.setOnItemSelectedListener(new FilterSelectListener());
@@ -235,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         long timeTo = 0;
         try {
             timeFrom = dateFormat.parse(fromDateButton.getText().toString()).getTime() / 1000;
-            timeTo = dateFormat.parse(fromDateButton.getText().toString()).getTime() / 1000;
+            timeTo = (dateFormat.parse(toDateButton.getText().toString()).getTime() / 1000) + 86399;
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -281,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        /*parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
+        parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
         VKApi.groups()
                 .get(parameters)
                 .executeSyncWithListener(new VKRequest.VKRequestListener() {
@@ -302,8 +295,8 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                });*/
-        //pubSet = new HashSet<>(supportedPubSet);
+                });
+        pubSet = new HashSet<>(supportedPubSet);
 
     }
 
@@ -377,11 +370,11 @@ public class MainActivity extends AppCompatActivity {
             String selected = String.valueOf(((TextView)view).getText());
             switch (selected) {
                 case "Все": {
-                    pubSet = new HashSet<>(Arrays.asList(1, 2)); //new HashSet<>(supportedPubSet);
+                    pubSet = new HashSet<>(supportedPubSet);
                     break;
                 }
                 case "Мои": {
-                    pubSet = getMySubs(); //new HashSet<>(subscribedPubSet);
+                    pubSet = new HashSet<>(subscribedPubSet);
                     break;
                 }
                 case "Выбор": {
