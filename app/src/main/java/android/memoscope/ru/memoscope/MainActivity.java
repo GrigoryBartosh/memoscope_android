@@ -1,7 +1,9 @@
 package android.memoscope.ru.memoscope;
 
-import android.memoscope.ru.memoscope.utils.Network;
 import android.content.Context;
+import android.memoscope.ru.memoscope.utils.Network;
+import android.memoscope.ru.memoscope.recyclerview.ShadowVerticalSpaceItemDecorator;
+import android.memoscope.ru.memoscope.recyclerview.VerticalSpaceItemDecorator;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,19 +13,19 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -38,9 +40,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,13 +48,45 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.memoscope.ru.memoscope.recyclerview.CustomAdapter;
+
 public class MainActivity extends AppCompatActivity {
 
-    private ListView listView;
+    private RecyclerView listView;
 
     private List<String> supportedPubList = Arrays.asList("1", "2", "3", "4");//new ArrayList<>();
     private List<String> pubList = new ArrayList<>(supportedPubList);
 
+    private final List<JSONObject> fakePosts;
+    private final SparseArray<JSONObject> fakeGroups;
+
+    {
+        JSONObject post = null;
+        try {
+            post = new JSONObject("{\"id\":9975266,\"from_id\":-29534144,\"owner_id\":-29534144,\"date\":1541775330,\"marked_as_ads\":0,\"post_type\":\"post\",\"text\":\"Тверская область стала первым российским регионом, который полностью перешёл с аналогового эфирного телевещания на цифровое.\\n\\nПо всей стране аналоговое вещание отключат с 2019 года, хотя, по опросам, 30% телевизоров в стране не могут в цифру\\n\\nhttp:\\/\\/news.lenta.ch\\/vLf9\",\"attachments\":[{\"type\":\"photo\",\"photo\":{\"id\":456753792,\"album_id\":-7,\"owner_id\":-29534144,\"user_id\":100,\"photo_75\":\"https:\\/\\/sun9-4.userapi.com\\/c635106\\/v635106310\\/f234\\/nsuSWGUzuvc.jpg\",\"photo_130\":\"https:\\/\\/sun9-3.userapi.com\\/c635106\\/v635106310\\/f235\\/lxyBdbZ8qgU.jpg\",\"photo_604\":\"https:\\/\\/sun9-3.userapi.com\\/c635106\\/v635106310\\/f236\\/YpAtRUpU6JE.jpg\",\"photo_807\":\"https:\\/\\/sun9-6.userapi.com\\/c635106\\/v635106310\\/f237\\/QZGWkDG4MxE.jpg\",\"width\":800,\"height\":620,\"text\":\"Тверская область стала первым российским регионом, который полностью перешёл с аналогового эфирного телевещания на цифровое.\\n\\nПо всей стране аналоговое вещание отключат с 2019 года, хотя, по опросам, 30% телевизоров в стране не могут в цифру\\n\\nhttp:\\/\\/news.lenta.ch\\/vLf9\",\"date\":1541775330,\"post_id\":9975266,\"access_key\":\"4efb59e9bf2361fe55\"}},{\"type\":\"audio\",\"audio\":{\"id\":456241677,\"owner_id\":2000016863,\"artist\":\"Tony Igy\",\"title\":\"Astronomia\",\"duration\":25,\"date\":1541775531,\"url\":\"https:\\/\\/vk.com\\/mp3\\/audio_api_unavailable.mp3\"}}],\"post_source\":{\"type\":\"api\"},\"comments\":{\"count\":211,\"can_post\":1},\"likes\":{\"count\":2549,\"user_likes\":0,\"can_like\":1,\"can_publish\":1},\"reposts\":{\"count\":33,\"user_reposted\":0}}");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        fakePosts = Arrays.asList(post, post, post);
+        fakeGroups = new SparseArray<>();
+        try {
+            JSONObject group = new JSONObject("{\n" +
+                    "\"id\": 29534144,\n" +
+                    "\"name\": \"Лентач\",\n" +
+                    "\"screen_name\": \"oldlentach\",\n" +
+                    "\"is_closed\": 0,\n" +
+                    "\"type\": \"page\",\n" +
+                    "\"is_admin\": 0,\n" +
+                    "\"is_member\": 1,\n" +
+                    "\"photo_50\": \"https://sun9-9.us...tyoY-PY-8.jpg?ava=1\",\n" +
+                    "\"photo_100\": \"https://sun9-6.us...H1ZGSkcOE.jpg?ava=1\",\n" +
+                    "\"photo_200\": \"https://sun9-6.us...aAIay7114.jpg?ava=1\"\n" +
+                    "}");
+            fakeGroups.put(-29534144, group);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -65,17 +96,40 @@ public class MainActivity extends AppCompatActivity {
         if (!VKSdk.isLoggedIn())
             VKSdk.login(this, VKScope.WALL);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         NestedScrollView scrollView = findViewById(R.id.scrollView);
+
+        CustomAdapter adapter = new CustomAdapter(this, fakePosts, fakeGroups);
+
         listView = scrollView.findViewById(R.id.list_view);
         listView.setNestedScrollingEnabled(true);
+        listView.setHasFixedSize(false);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+        int verticalSpacing = 20;
+        VerticalSpaceItemDecorator itemDecorator =
+                new VerticalSpaceItemDecorator(verticalSpacing);
+        ShadowVerticalSpaceItemDecorator shadowItemDecorator =
+                new ShadowVerticalSpaceItemDecorator(this, R.drawable.drop_shadow);
+
+
+        // 7. Set the LayoutManager
+        listView.setLayoutManager(layoutManager);
+
+        // 8. Set the ItemDecorators
+        listView.addItemDecoration(shadowItemDecorator);
+        listView.addItemDecoration(itemDecorator);
+
+        listView.setAdapter(adapter);
 
         VKParameters parameters = VKParameters.from(VKApiConst.OWNER_ID, -29534144, VKApiConst.COUNT, 100, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .get(parameters)
                 .executeSyncWithListener(new GetPostsListener());
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         Button fromDateButton = findViewById(R.id.from_date);
         Button toDateButton = findViewById(R.id.to_date);
@@ -117,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem mSearch = menu.findItem(R.id.action_search);
 
         SearchView mSearchView = (SearchView) mSearch.getActionView();
+
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,13 +207,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fakePost() {
-        try {
-            JSONObject post = new JSONObject("{\"id\":9975266,\"from_id\":-29534144,\"owner_id\":-29534144,\"date\":1541775330,\"marked_as_ads\":0,\"post_type\":\"post\",\"text\":\"Тверская область стала первым российским регионом, который полностью перешёл с аналогового эфирного телевещания на цифровое.\\n\\nПо всей стране аналоговое вещание отключат с 2019 года, хотя, по опросам, 30% телевизоров в стране не могут в цифру\\n\\nhttp:\\/\\/news.lenta.ch\\/vLf9\",\"attachments\":[{\"type\":\"photo\",\"photo\":{\"id\":456753792,\"album_id\":-7,\"owner_id\":-29534144,\"user_id\":100,\"photo_75\":\"https:\\/\\/sun9-4.userapi.com\\/c635106\\/v635106310\\/f234\\/nsuSWGUzuvc.jpg\",\"photo_130\":\"https:\\/\\/sun9-3.userapi.com\\/c635106\\/v635106310\\/f235\\/lxyBdbZ8qgU.jpg\",\"photo_604\":\"https:\\/\\/sun9-3.userapi.com\\/c635106\\/v635106310\\/f236\\/YpAtRUpU6JE.jpg\",\"photo_807\":\"https:\\/\\/sun9-6.userapi.com\\/c635106\\/v635106310\\/f237\\/QZGWkDG4MxE.jpg\",\"width\":800,\"height\":620,\"text\":\"Тверская область стала первым российским регионом, который полностью перешёл с аналогового эфирного телевещания на цифровое.\\n\\nПо всей стране аналоговое вещание отключат с 2019 года, хотя, по опросам, 30% телевизоров в стране не могут в цифру\\n\\nhttp:\\/\\/news.lenta.ch\\/vLf9\",\"date\":1541775330,\"post_id\":9975266,\"access_key\":\"4efb59e9bf2361fe55\"}},{\"type\":\"audio\",\"audio\":{\"id\":456241677,\"owner_id\":2000016863,\"artist\":\"Tony Igy\",\"title\":\"Astronomia\",\"duration\":25,\"date\":1541775531,\"url\":\"https:\\/\\/vk.com\\/mp3\\/audio_api_unavailable.mp3\"}}],\"post_source\":{\"type\":\"api\"},\"comments\":{\"count\":211,\"can_post\":1},\"likes\":{\"count\":2549,\"user_likes\":0,\"can_like\":1,\"can_publish\":1},\"reposts\":{\"count\":33,\"user_reposted\":0}}");
-            CustomAdapter adapter = new CustomAdapter(this, Collections.singletonList(post));
-            listView.setAdapter(adapter);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        CustomAdapter adapter = new CustomAdapter(this, fakePosts, fakeGroups);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void sendRequestToServer(String query) {
@@ -185,17 +236,18 @@ public class MainActivity extends AppCompatActivity {
                     postsList.add(posts.getJSONObject(i));
                 }
 
-                CustomAdapter adapter = new CustomAdapter(MainActivity.this, postsList);
+                SparseArray<JSONObject> groupsMap = new SparseArray<>();
 
                 JSONArray groups = responseObject
                         .getJSONArray("groups");
 
                 for (int i = 0; i < groups.length(); i++) {
-                    adapter.addGroup(groups.getJSONObject(i));
+                    JSONObject group = groups.getJSONObject(i);
+                    int id = -group.getInt("id");
+                    groupsMap.put(id, group);
                 }
 
-                listView.setAdapter(adapter);
-                //((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+                ((CustomAdapter) listView.getAdapter()).update(postsList, groupsMap);
             } catch (JSONException e) {
                 Log.e("MyListener", e.getMessage());
             }
