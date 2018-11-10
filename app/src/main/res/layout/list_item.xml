@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:id="@+id/text_view"
+        android:textIsSelectable="true"
         android:padding="10sp"
         android:layout_below="@id/icon_view"/>
 
@@ -39,50 +40,30 @@
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:layout_below="@id/text_view"/>
 
     <Button
         android:id="@+id/prev_button"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
+        style="@style/LRButton"
         android:layout_below="@id/image_view"
-        android:text="@string/prev" />
+        android:layout_alignParentStart="true"
+        android:background="@drawable/ic_chevron_left_black_24dp" />
 
-    <Button
-        android:id="@+id/like_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/image_view"
-        android:layout_toRightOf="@id/prev_button"
-        android:layout_toEndOf="@id/prev_button"
-        android:text="@string/like" />
-
-
-    <Button
-        android:id="@+id/share_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/image_view"
-        android:layout_toRightOf="@id/like_button"
-        android:layout_toEndOf="@id/like_button"
-        android:text="@string/share" />
-
-    <Button
+    <ImageButton
         android:id="@+id/open_vk_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/image_view"
-        android:layout_toRightOf="@id/share_button"
-        android:layout_toEndOf="@id/share_button"
-        android:text="@string/open_vk" />
+        android:layout_centerInParent="true"
+        android:background="@drawable/ic_vklogo"/>
 
     <Button
         android:id="@+id/next_button"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
+        style="@style/LRButton"
         android:layout_below="@id/image_view"
-        android:layout_toRightOf="@id/open_vk_button"
-        android:layout_toEndOf="@id/open_vk_button"
-        android:text="@string/next" />
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_chevron_right_black_24dp" />
 
 </RelativeLayout>

@@ -49,10 +49,18 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder holder, int position) {
+
         JSONObject post = posts.get(position);
+
         try {
             String text = post.getString("text");
+
             holder.setTextViewText(text);
+
+            String expected = "9981501";
+            if (post.getString("id").equals(expected)) {
+                int t = 10;
+            }
         } catch (JSONException e) {
             Log.e("CustomAdapter", "post has no text");
         }
@@ -80,9 +88,10 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
             e.printStackTrace();
         }
 
+        List<String> urls = new ArrayList<>();
+
         if (post.has("attachments")) {
             try {
-                List<String> urls = new ArrayList<>();
                 JSONArray attachments = post.getJSONArray("attachments");
                 for (int i = 0; i < attachments.length(); i++) {
                     JSONObject attachment = attachments.getJSONObject(i);
@@ -92,12 +101,12 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
                         urls.add(url);
                     }
                 }
-                holder.setUrls(urls);
-                holder.setImageViewPicture();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
+        holder.setUrls(urls);
 
 
     }
