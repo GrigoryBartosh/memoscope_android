@@ -1,25 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/edit_name"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_gravity="center" android:orientation="vertical"  >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/img"
-            android:src="@mipmap/ic_launcher"/>
-        <CheckBox
-            style="@style/PubCheckbox"
-            android:text="ZHEPA"
-            android:layout_toRightOf="@id/img"
-            />
-    </LinearLayout>
+    android:layout_gravity="center" android:orientation="vertical"
+    android:background="@drawable/dialog_bg">
 
-    <Button
-        android:layout_width="match_parent"
+
+    <ListView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BACK"/>
+        android:id="@+id/pub_list">
+    </ListView>
+
 </LinearLayout>

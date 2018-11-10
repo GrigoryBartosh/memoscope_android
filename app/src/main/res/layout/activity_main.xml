@@ -70,7 +70,7 @@
                 android:layout_toEndOf="@id/to_text"
                 android:layout_toRightOf="@id/to_text"/>
 
-            <Spinner
+            <android.memoscope.ru.memoscope.NDSpinner
                 style="@style/FilterSpinner"
                 android:layout_toEndOf="@id/to_date"
                 android:layout_toRightOf="@id/to_date"

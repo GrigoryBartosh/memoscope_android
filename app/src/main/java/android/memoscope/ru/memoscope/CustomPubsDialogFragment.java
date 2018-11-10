@@ -1,19 +1,33 @@
 package android.memoscope.ru.memoscope;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.memoscope.ru.memoscope.utils.CircleTransform;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.ListView;
 
-import java.util.List;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class CustomPubsDialogFragment extends DialogFragment {
-    private List<String> pubs;
-    private List<String> supportedPubList;
+    private Set<Integer> pubs;
+    private ArrayList<Pub> supportedPubs;
 
     public CustomPubsDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -38,11 +52,56 @@ public class CustomPubsDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Get field from view
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        ListView listView = view.findViewById(R.id.pub_list);
+        ViewGroup.LayoutParams lp = listView.getLayoutParams();
+        lp.height = metrics.heightPixels * 7 / 10;
+        listView.setLayoutParams(lp);
+        listView.setAdapter(new PubAdapter(getContext(), supportedPubs));
     }
 
-    public void setPubs(List<String> pubList, List<String> supportedPubList) {
+    public void setPubs(Set<Integer> pubList, ArrayList<Pub> supportedPubs) {
         pubs = pubList;
-        this.supportedPubList = supportedPubList;
+        this.supportedPubs = supportedPubs;
+    }
+
+    public class PubAdapter extends ArrayAdapter<Pub> {
+        public PubAdapter(Context context, ArrayList<Pub> users) {
+            super(context, 0, users);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.pub_item, parent, false);
+            CheckBox box = convertView.findViewById(R.id.box);
+            final Pub pub = getItem(position);
+
+            box.setChecked(pubs.contains(pub.getId()));
+            box.setText(pub.getName());
+
+            box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        pubs.add(pub.getId());
+                    } else {
+                        pubs.remove(pub.getId());
+                    }
+                }
+            });
+
+            ImageView img = convertView.findViewById(R.id.pub_img);
+            Picasso.get()
+                    .load(pub.getImageURL())
+                    .transform(new CircleTransform())
+                    .into(img);
+
+            return convertView;
+        }
     }
 }
