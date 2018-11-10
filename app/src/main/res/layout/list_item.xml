@@ -91,6 +91,18 @@
         android:textOn="" />
 
     <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/image_view"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/open_vk_button"
+        android:background="@drawable/share_button"/>
+
+    <Button
         android:id="@+id/next_button"
         style="@style/LRButton"
         android:layout_below="@id/image_view"
