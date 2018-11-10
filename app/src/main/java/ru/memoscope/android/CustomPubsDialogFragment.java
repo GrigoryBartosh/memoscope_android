@@ -79,8 +79,11 @@ public class CustomPubsDialogFragment extends DialogFragment {
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.pub_item, parent, false);
-            CheckBox box = convertView.findViewById(R.id.box);
+            View rowView = convertView;
+            if (rowView == null) {
+                rowView = LayoutInflater.from(getContext()).inflate(R.layout.pub_item, parent, false);
+            }
+            CheckBox box = rowView.findViewById(R.id.box);
             final Pub pub = getItem(position);
 
             box.setChecked(pubs.contains(pub.getId()));
@@ -97,13 +100,13 @@ public class CustomPubsDialogFragment extends DialogFragment {
                 }
             });
 
-            ImageView img = convertView.findViewById(R.id.pub_img);
+            ImageView img = rowView.findViewById(R.id.pub_img);
             Picasso.get()
                     .load(pub.getImageURL())
                     .transform(new CircleTransform())
                     .into(img);
 
-            return convertView;
+            return rowView;
         }
     }
 }

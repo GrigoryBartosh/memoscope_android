@@ -74,6 +74,9 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
 
             String name = group.getString("name");
             holder.setNameViewText(name);
+
+            int post_id = post.getInt("id");
+            holder.setVKPostId(owner_id + "_" + post_id);
         } catch (JSONException e) {
             e.printStackTrace();
         }

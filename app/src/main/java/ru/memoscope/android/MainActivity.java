@@ -40,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,12 +55,18 @@ import ru.memoscope.android.recyclerview.ShadowVerticalSpaceItemDecorator;
 import ru.memoscope.android.recyclerview.VerticalSpaceItemDecorator;
 import ru.memoscope.android.utils.Network;
 
+import static ru.memoscope.android.utils.Utils.getBestQualityURL;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView listView;
 
     private ArrayList<Pub> supportedPubList = new ArrayList<>();
+    private Set<Integer> supportedPubSet = new HashSet<>();
+    private Set<Integer> subscribedPubSet = new HashSet<>();
     private Set<Integer> pubSet = new HashSet<>();
+    private Button fromDateButton;
+    private Button toDateButton;
 
     private final List<JSONObject> fakePosts;
     private final SparseArray<JSONObject> fakeGroups;
@@ -136,19 +143,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button fromDateButton = findViewById(R.id.from_date);
-        Button toDateButton = findViewById(R.id.to_date);
+        fromDateButton = findViewById(R.id.from_date);
+        toDateButton = findViewById(R.id.to_date);
         fromDateButton.setOnClickListener(new DateButtonClickListener());
         String currentDate = currentDateString();
         fromDateButton.setText(currentDate);
         toDateButton.setOnClickListener(new DateButtonClickListener());
         toDateButton.setText(currentDate);
 
-        supportedPubList.add(new Pub(1, "Лентач", "https://pp.userapi.com/c637622/v637622257/5b5bf/xjT2gn-8MU4.jpg"));
-        supportedPubList.add(new Pub(2, "Абстрактные мемы для элиты всех сортов", "https://pp.userapi.com/c637622/v637622257/5b5bf/xjT2gn-8MU4.jpg"));
-
-        pubSet.add(1);
-        pubSet.add(2);
+        initSupportedPubList();
 
         Spinner filterSpinner = findViewById(R.id.filter_spinner);
         filterSpinner.setOnItemSelectedListener(new FilterSelectListener());
@@ -223,7 +226,81 @@ public class MainActivity extends AppCompatActivity {
     private void sendRequestToServer(String query) {
         String host = getResources().getString(R.string.host);
         int port = getResources().getInteger(R.integer.port);
-        new Network(this, host, port).getPosts();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", getCurrentLocale(this));
+        long timeFrom = 0;
+        long timeTo = 0;
+        try {
+            timeFrom = dateFormat.parse(fromDateButton.getText().toString()).getTime() / 1000;
+            timeTo = (dateFormat.parse(toDateButton.getText().toString()).getTime() / 1000) + 86399;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("MainActivityTag", "timeFrom=" + timeFrom + ", timeTo=" + timeTo);
+        ArrayList<Long> list = new ArrayList<>();
+        for (Integer id: pubSet) {
+            list.add((long) id);
+        }
+        new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
+    }
+
+    private void initSupportedPubList() {
+        String host = getResources().getString(R.string.host);
+        int port = getResources().getInteger(R.integer.port);
+        List<Long> groups = new Network(this, host, port).getGroups();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < groups.size(); i++) {
+            builder.append(-groups.get(i));
+            if (i != groups.size() - 1) {
+                builder.append(",");
+            }
+        }
+        VKParameters parameters = VKParameters.from("group_ids", builder.toString());
+        VKApi.groups()
+                .getById(parameters)
+                .executeSyncWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        try {
+                            JSONArray groups = response.json.getJSONArray("response");
+                            for (int i = 0; i < groups.length(); i++) {
+                                JSONObject group = groups.getJSONObject(i);
+                                int id = group.getInt("id");
+                                String name = group.getString("name");
+                                String url = getBestQualityURL(group);
+                                supportedPubList.add(new Pub(id, name, url));
+                                for (Pub pub: supportedPubList) {
+                                    supportedPubSet.add(pub.getId());
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
+        VKApi.groups()
+                .get(parameters)
+                .executeSyncWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        try {
+                            JSONArray groups = response.json
+                                    .getJSONObject("response")
+                                    .getJSONArray("items");
+                            for (int i = 0; i < groups.length(); i++) {
+                                int id = groups.getInt(i);
+                                if (supportedPubSet.contains(id)) {
+                                    subscribedPubSet.add(id);
+                                    Log.d("MainActivityTag", "another id: " + id);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        pubSet = new HashSet<>(supportedPubSet);
+
     }
 
     public class GetPostsListener extends VKRequest.VKRequestListener {
@@ -296,11 +373,11 @@ public class MainActivity extends AppCompatActivity {
             String selected = String.valueOf(((TextView)view).getText());
             switch (selected) {
                 case "Все": {
-                    pubSet = new HashSet<>(Arrays.asList(1, 2));
+                    pubSet = new HashSet<>(supportedPubSet);
                     break;
                 }
                 case "Мои": {
-                    pubSet = getMySubs();
+                    pubSet = new HashSet<>(subscribedPubSet);
                     break;
                 }
                 case "Выбор": {
