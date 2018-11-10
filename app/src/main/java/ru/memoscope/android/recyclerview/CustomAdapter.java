@@ -25,11 +25,13 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
     private LayoutInflater inflater;
     private List<JSONObject> posts;
     private SparseArray<JSONObject> groups;
+    private Context context;
 
     public CustomAdapter(Context context, List<JSONObject> posts, SparseArray<JSONObject> groups) {
         inflater = LayoutInflater.from(context);
         this.posts = posts;
         this.groups = groups;
+        this.context = context;
     }
 
     public void update(List<JSONObject> posts, SparseArray<JSONObject> groups) {
@@ -42,7 +44,7 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
     @Override
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.list_item, parent, false);
-        return new ItemHolder(view);
+        return new ItemHolder(view, context);
     }
 
     @Override

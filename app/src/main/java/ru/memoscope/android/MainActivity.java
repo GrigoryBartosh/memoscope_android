@@ -1,5 +1,7 @@
 package ru.memoscope.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
