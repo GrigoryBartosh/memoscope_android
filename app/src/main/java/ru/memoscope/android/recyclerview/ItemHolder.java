@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,7 +39,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final Button prevButton;
     private final Button nextButton;
-    private final Button openVKButton;
+    private final ImageButton openVKButton;
     private Context context;
 
     public ItemHolder(@NonNull View itemView, Context context) {
