@@ -1,4 +1,4 @@
-package android.memoscope.ru.memoscope;
+package ru.memoscope.android;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

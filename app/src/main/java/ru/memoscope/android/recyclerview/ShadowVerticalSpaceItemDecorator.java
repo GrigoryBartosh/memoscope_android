@@ -1,4 +1,4 @@
-package android.memoscope.ru.memoscope.recyclerview;
+package ru.memoscope.android.recyclerview;
 
 import android.content.Context;
 import android.graphics.Canvas;

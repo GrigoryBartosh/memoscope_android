@@ -1,4 +1,4 @@
-package android.memoscope.ru.memoscope;
+package ru.memoscope.android;
 
 public class Pub {
     private int id;

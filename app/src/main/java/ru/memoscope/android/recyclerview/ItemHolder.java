@@ -1,7 +1,6 @@
-package android.memoscope.ru.memoscope.recyclerview;
+package ru.memoscope.android.recyclerview;
 
 import android.memoscope.ru.memoscope.R;
-import android.memoscope.ru.memoscope.utils.CircleTransform;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import ru.memoscope.android.utils.CircleTransform;
 
 public class ItemHolder extends RecyclerView.ViewHolder {
 

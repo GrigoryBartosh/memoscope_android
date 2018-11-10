@@ -1,10 +1,10 @@
-package android.memoscope.ru.memoscope;
+package ru.memoscope.android;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.memoscope.ru.memoscope.utils.CircleTransform;
+import android.memoscope.ru.memoscope.R;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +24,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Set;
+
+import ru.memoscope.android.utils.CircleTransform;
 
 public class CustomPubsDialogFragment extends DialogFragment {
     private Set<Integer> pubs;

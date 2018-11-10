@@ -1,4 +1,4 @@
-package android.memoscope.ru.memoscope.recyclerview;
+package ru.memoscope.android.recyclerview;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

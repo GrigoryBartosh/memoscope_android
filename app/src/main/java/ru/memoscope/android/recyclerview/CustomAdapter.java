@@ -1,4 +1,4 @@
-package android.memoscope.ru.memoscope.recyclerview;
+package ru.memoscope.android.recyclerview;
 
 import android.content.Context;
 import android.memoscope.ru.memoscope.R;
@@ -9,7 +9,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;

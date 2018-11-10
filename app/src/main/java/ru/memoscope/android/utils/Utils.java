@@ -1,4 +1,4 @@
-package android.memoscope.ru.memoscope.utils;
+package ru.memoscope.android.utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,21 +1,17 @@
-package android.memoscope.ru.memoscope.utils;
+package ru.memoscope.android.utils;
 
-import android.content.Context;
-import android.content.Intent;
-import android.memoscope.ru.memoscope.MainActivity;
 import android.util.Log;
 
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKParameters;
 
-import java.util.ArrayList;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import ru.memoscope.ServerGrpc;
 import ru.memoscope.ServerProto;
+import ru.memoscope.android.MainActivity;
 
 public class Network {
     private String host;

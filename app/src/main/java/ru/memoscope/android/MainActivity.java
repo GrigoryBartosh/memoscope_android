@@ -1,10 +1,7 @@
-package android.memoscope.ru.memoscope;
+package ru.memoscope.android;
 
 import android.content.Context;
-import android.memoscope.ru.memoscope.recyclerview.CustomAdapter;
-import android.memoscope.ru.memoscope.recyclerview.ShadowVerticalSpaceItemDecorator;
-import android.memoscope.ru.memoscope.recyclerview.VerticalSpaceItemDecorator;
-import android.memoscope.ru.memoscope.utils.Network;
+import android.memoscope.ru.memoscope.R;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,6 +48,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import ru.memoscope.android.recyclerview.CustomAdapter;
+import ru.memoscope.android.recyclerview.ShadowVerticalSpaceItemDecorator;
+import ru.memoscope.android.recyclerview.VerticalSpaceItemDecorator;
+import ru.memoscope.android.utils.Network;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView listView;
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-  
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
