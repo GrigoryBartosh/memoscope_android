@@ -36,6 +36,7 @@ import ru.memoscope.android.utils.CircleTransform;
 import ru.memoscope.android.utils.Utils;
 
 import static ru.memoscope.android.utils.Utils.openLink;
+import static ru.memoscope.android.utils.Utils.shareLink;
 
 public class ItemHolder extends RecyclerView.ViewHolder {
     private List<String> urls;
@@ -47,6 +48,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final Button prevButton;
     private final Button nextButton;
+    private final Button shareButton;
     private final ImageButton openVKButton;
     private final ToggleButton likeButton;
     private Context context;
@@ -61,6 +63,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
         imageView = itemView.findViewById(R.id.image_view);
         prevButton = itemView.findViewById(R.id.prev_button);
         nextButton = itemView.findViewById(R.id.next_button);
+        shareButton = itemView.findViewById(R.id.share_button);
         openVKButton = itemView.findViewById(R.id.open_vk_button);
         likeButton = itemView.findViewById(R.id.like_button);
         prevButton.setOnClickListener(new View.OnClickListener() {
@@ -174,6 +177,12 @@ public class ItemHolder extends RecyclerView.ViewHolder {
                     request = new VKRequest("likes.delete", parameters);
                 }
                 request.executeWithListener(new VKRequest.VKRequestListener() {});
+            }
+        });
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareLink((Activity) context, url);
             }
         });
     }

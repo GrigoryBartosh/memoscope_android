@@ -76,6 +76,7 @@
 
     <Button
         style="@style/ListButton"
+        android:id="@+id/share_button"
         android:layout_below="@id/image_view"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/open_vk_button"

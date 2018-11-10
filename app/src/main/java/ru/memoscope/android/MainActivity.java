@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 options.setVisibility(vis);
             }
         });
-        mSearchView.setQueryHint("Search");
+        mSearchView.setQueryHint(getString(R.string.search_prompt));
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

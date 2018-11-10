@@ -83,16 +83,16 @@ public class CustomPubsDialogFragment extends DialogFragment {
             if (rowView == null) {
                 rowView = LayoutInflater.from(getContext()).inflate(R.layout.pub_item, parent, false);
             }
-            CheckBox box = rowView.findViewById(R.id.box);
+            final CheckBox box = rowView.findViewById(R.id.box);
             final Pub pub = getItem(position);
 
             box.setChecked(pubs.contains(pub.getId()));
             box.setText(pub.getName());
 
-            box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            box.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
+                public void onClick(View v) {
+                    if (box.isChecked()) {
                         pubs.add(pub.getId());
                     } else {
                         pubs.remove(pub.getId());

@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import ru.memoscope.android.R;
+
 public class Utils {
 
     private static final String VK_APP_PACKAGE_ID = "com.vkontakte.android";
@@ -52,5 +54,13 @@ public class Utils {
             }
         }
         activity.startActivity(intent);
+    }
+
+    public static void shareLink(Activity activity, String url) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, "Sharing URL");
+        i.putExtra(Intent.EXTRA_TEXT, url);
+        activity.startActivity(Intent.createChooser(i, activity.getString(R.string.share_chooser_title)));
     }
 }

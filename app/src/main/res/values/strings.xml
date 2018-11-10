@@ -17,5 +17,7 @@
     <string name="next">&#62;</string>
     <string name="prev">&#60;</string>
     <string name="notfound">Ничего не найдено ¯\\\_(ツ)_/¯</string>
+    <string name="share_chooser_title">Поделиться постом</string>
+    <string name="search_prompt">Поиск мемов</string>
     <integer name="port">8803</integer>
 </resources>
