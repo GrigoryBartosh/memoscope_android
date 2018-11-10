@@ -29,7 +29,18 @@
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:id="@+id/not_found"
+        android:visibility="gone"
         android:text="@string/notfound"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:id="@+id/logo"
+        android:alpha="0.5"
+        android:padding="20dp"
+        android:src="@drawable/memoscope"/>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
