@@ -36,43 +36,22 @@ public class Network {
         blockingStub = ServerGrpc.newBlockingStub(channel);
     }
 
-    public void getPosts(String requestText, long timeFrom, long timeTo, Iterable<Long> groupIds) {
+    public String getPosts(String requestText, long timeFrom, long timeTo, Iterable<Long> groupIds) {
         ServerProto.FindPostsRequest request = ServerProto.FindPostsRequest.newBuilder()
                 .addAllGroupIds(groupIds)
                 .setText(requestText)
                 .setTimeFrom(timeFrom)
                 .setTimeTo(timeTo)
                 .build();
-        stub.findPosts(request, new ResponseObserver());
-    }
-
-    class ResponseObserver implements StreamObserver<ServerProto.FindPostsResponse> {
-        @Override
-        public void onNext(ServerProto.FindPostsResponse value) {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < value.getPostsCount(); i++) {
-                ServerProto.PostInfo postInfo = value.getPosts(i);
-                builder.append(postInfo.getGroupId()).append("_").append(postInfo.getPostId());
-                if (i + 1 != value.getPostsCount())
-                    builder.append(",");
-            }
-            String posts = builder.toString();
-            Log.d("NetworkTag", posts);
-            VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
-            VKApi.wall()
-                    .getById(parameters)
-                    .executeSyncWithListener(mContext.new GetPostsListener());
+        ServerProto.FindPostsResponse response = blockingStub.findPosts(request);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < response.getPostsCount(); i++) {
+            ServerProto.PostInfo postInfo = response.getPosts(i);
+            builder.append(postInfo.getGroupId()).append("_").append(postInfo.getPostId());
+            if (i + 1 != response.getPostsCount())
+                builder.append(",");
         }
-
-        @Override
-        public void onError(Throwable t) {
-            Log.d("NetworkTag", "error: " + t.getMessage());
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
+        return builder.toString();
     }
 
     public List<Long> getGroups() {

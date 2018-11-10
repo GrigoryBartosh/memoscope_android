@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem mSearch = menu.findItem(R.id.action_search);
 
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        final SearchView mSearchView = (SearchView) mSearch.getActionView();
 
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 sendRequestToServer(query);
-                //fakePost();
+                mSearchView.clearFocus();
                 return true;
             }
 
@@ -240,7 +240,11 @@ public class MainActivity extends AppCompatActivity {
         for (Integer id: pubSet) {
             list.add((long) -id);
         }
-        new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
+        String posts = new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
+        VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
+        VKApi.wall()
+                .getById(parameters)
+                .executeSyncWithListener(new GetPostsListener());
     }
 
     private void initSupportedPubList() {
