@@ -145,10 +145,13 @@ public class MainActivity extends AppCompatActivity {
 
         fromDateButton = findViewById(R.id.from_date);
         toDateButton = findViewById(R.id.to_date);
+
         fromDateButton.setOnClickListener(new DateButtonClickListener());
-        String currentDate = currentDateString();
-        fromDateButton.setText(currentDate);
+        String weekAgo = weekAgoString();
+        fromDateButton.setText(weekAgo);
+
         toDateButton.setOnClickListener(new DateButtonClickListener());
+        String currentDate = currentDateString();
         toDateButton.setText(currentDate);
 
         notFoundView = findViewById(R.id.not_found);
@@ -171,6 +174,14 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private String weekAgoString() {
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date date = new Date();
+        Date pastDate = new Date(date.getTime() - (7 * DAY_IN_MS));
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", getCurrentLocale(this));
+        return dateFormat.format(pastDate);
     }
 
     private String currentDateString() {

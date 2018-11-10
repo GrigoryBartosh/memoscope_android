@@ -110,6 +110,15 @@ public class ItemHolder extends RecyclerView.ViewHolder {
         if (urls.size() == 0)
             return;
 
+        prevButton.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.VISIBLE);
+        if (current == 0) {
+            prevButton.setVisibility(View.GONE);
+        }
+        if (current == urls.size() - 1) {
+            nextButton.setVisibility(View.GONE);
+        }
+
         Picasso.get()
                 .load(urls.get(current))
                 .placeholder(R.drawable.load_bg)
