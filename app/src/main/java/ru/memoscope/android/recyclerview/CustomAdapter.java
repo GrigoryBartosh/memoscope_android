@@ -10,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.memoscope.android.utils.Utils.formatTime;
@@ -75,17 +77,24 @@ public class CustomAdapter extends RecyclerView.Adapter<ItemHolder> {
 
         if (post.has("attachments")) {
             try {
-                JSONObject attachment = post.getJSONArray("attachments").getJSONObject(0);
-                Log.d("CustomAdapter", attachment.toString());
-                if (attachment.has("photo")) {
-                    String url = getBestQualityURL(attachment.getJSONObject("photo"));
-                    Log.d("CustomAdapter", url);
-                    holder.setImageViewPictrue(url);
+                List<String> urls = new ArrayList<>();
+                JSONArray attachments = post.getJSONArray("attachments");
+                for (int i = 0; i < attachments.length(); i++) {
+                    JSONObject attachment = attachments.getJSONObject(i);
+                    if (attachment.has("photo")) {
+                        String url = getBestQualityURL(attachment.getJSONObject("photo"));
+                        Log.d("CustomAdapter", url);
+                        urls.add(url);
+                    }
                 }
+                holder.setUrls(urls);
+                holder.setImageViewPicture();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
+
     }
 
     @Override
