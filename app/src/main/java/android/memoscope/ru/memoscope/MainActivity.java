@@ -1,7 +1,7 @@
 package android.memoscope.ru.memoscope;
 
-import android.memoscope.ru.memoscope.utils.Network;
 import android.content.Context;
+import android.memoscope.ru.memoscope.utils.Network;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,13 +17,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -38,24 +36,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
-
-    private List<String> supportedPubList = Arrays.asList("1", "2", "3", "4");//new ArrayList<>();
-    private List<String> pubList = new ArrayList<>(supportedPubList);
-
+    private final String URL = "https://res.cloudinary.com/teepublic/image/private/s--tzvoXr7B--/t_Preview/b_rgb:ffffff,c_limit,f_jpg,h_630,q_90,w_630/v1522076329/production/designs/2531350_0.jpg";
+    private ArrayList<String> supportedPubList = new ArrayList<>(Arrays.asList("1", "2", "3", "4"));//new ArrayList<>();
+    private ArrayList<String> pubList = new ArrayList<>(supportedPubList);
+    private Map<String, String> pubMap = new HashMap<String, String>() {{
+        put("1", URL);
+        put("2", URL);
+        put("3", URL);
+        put("4", URL);
+    }};
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -246,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 case "Выбор": {
                     FragmentManager fm = getSupportFragmentManager();
                     CustomPubsDialogFragment pubsDialogFragment = CustomPubsDialogFragment.newInstance("Some Title");
-                    pubsDialogFragment.setPubs(pubList, supportedPubList);
+                    pubsDialogFragment.setPubs(pubList, supportedPubList, pubMap);
                     pubsDialogFragment.show(fm, "fragment_pubs");
                     break;
                 }
@@ -258,8 +261,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private List<String> getMySubs() {
-        List<String> userSubs = Arrays.asList("1", "3");
+    private ArrayList<String> getMySubs() {
+        ArrayList<String> userSubs = new ArrayList<>(Arrays.asList("1", "3"));
         userSubs.retainAll(supportedPubList);
         return userSubs;
     }

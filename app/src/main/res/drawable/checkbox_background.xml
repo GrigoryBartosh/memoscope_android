@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_checked="true">
-        <shape>
-            <gradient android:startColor="@color/colorAccent" android:endColor="@color/colorAccent" android:angle="-90"/>
-        </shape>
-    </item>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item>
-        <shape>
-            <gradient android:startColor="#FFFFFF" android:endColor="#FFFFFF" android:angle="-90"/>
+        <shape
+            android:shape="rectangle">
+            <size android:width="280dp" android:height="75dp"/>
+            <stroke android:width="1dp" android:color="#585858" />
+            <solid android:color="#FFFFFF" />
+            <padding android:bottom="1dp"/>
+            <padding android:left="7dp"/>
         </shape>
     </item>
-</selector>
+    <item
+        android:id="@+id/pub_icon_holder"
+        android:width="50dp"
+        android:height="50dp"
+        android:gravity="left|center_vertical">
+        <bitmap android:src="@drawable/icon"
+            android:id="@+id/pub_icon"/>
+    </item>
+</layer-list>
