@@ -13,8 +13,8 @@
     </string-array>
 
     <integer name="com_vk_sdk_AppId">6746791</integer>
-    <string name="host">172.20.36.186</string>
+    <string name="host">172.20.36.193</string>
     <string name="next">&#62;</string>
     <string name="prev">&#60;</string>
-    <integer name="port">8801</integer>
+    <integer name="port">8803</integer>
 </resources>

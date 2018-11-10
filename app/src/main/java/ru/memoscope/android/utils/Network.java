@@ -40,8 +40,8 @@ public class Network {
         ServerProto.FindPostsRequest request = ServerProto.FindPostsRequest.newBuilder()
                 .addAllGroupIds(groupIds)
                 .setText(requestText)
-                .setTimeFrom(0)
-                .setTimeTo(1000)
+                .setTimeFrom(timeFrom)
+                .setTimeTo(timeTo)
                 .build();
         stub.findPosts(request, new ResponseObserver());
     }
@@ -66,7 +66,7 @@ public class Network {
 
         @Override
         public void onError(Throwable t) {
-            Log.d("NetworkTag", "error((");
+            Log.d("NetworkTag", "error: " + t.getMessage());
         }
 
         @Override

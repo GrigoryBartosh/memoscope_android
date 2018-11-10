@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivityTag", "timeFrom=" + timeFrom + ", timeTo=" + timeTo);
         ArrayList<Long> list = new ArrayList<>();
         for (Integer id: pubSet) {
-            list.add((long) id);
+            list.add((long) -id)`;
         }
         new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
     }
