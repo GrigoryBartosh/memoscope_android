@@ -1,7 +1,5 @@
 package ru.memoscope.android;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.common.reflect.Parameter;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -68,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private Set<Integer> pubSet = new HashSet<>();
     private Button fromDateButton;
     private Button toDateButton;
+    private NestedScrollView scrollView;
+    private TextView notFoundView;
 
     private final List<JSONObject> fakePosts;
     private final SparseArray<JSONObject> fakeGroups;
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         if (!VKSdk.isLoggedIn())
             VKSdk.login(this, VKScope.WALL);
 
-        NestedScrollView scrollView = findViewById(R.id.scrollView);
+        scrollView = findViewById(R.id.scroll_view);
 
         CustomAdapter adapter = new CustomAdapter(this, fakePosts, fakeGroups);
 
@@ -151,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
         fromDateButton.setText(currentDate);
         toDateButton.setOnClickListener(new DateButtonClickListener());
         toDateButton.setText(currentDate);
+
+        notFoundView = findViewById(R.id.not_found);
 
         initSupportedPubList();
 
@@ -246,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
             setNoPosts();
             return;
         }
+        scrollView.setVisibility(View.VISIBLE);
+        notFoundView.setVisibility(View.GONE);
         VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .getById(parameters)
@@ -254,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setNoPosts() {
         ((CustomAdapter)listView.getAdapter()).update(Collections.<JSONObject>emptyList(), new SparseArray<JSONObject>());
+        scrollView.setVisibility(View.GONE);
+        notFoundView.setVisibility(View.VISIBLE);
     }
 
     private void initSupportedPubList() {
