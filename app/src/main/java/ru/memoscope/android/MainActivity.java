@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private Button toDateButton;
     private NestedScrollView scrollView;
     private TextView notFoundView;
+    private ImageView logoImage;
 
     private final List<JSONObject> fakePosts;
     private final SparseArray<JSONObject> fakeGroups;
@@ -155,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         toDateButton.setText(currentDate);
 
         notFoundView = findViewById(R.id.not_found);
+        logoImage = findViewById(R.id.logo);
 
         initSupportedPubList();
 
@@ -226,6 +229,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (newText.equals("")) {
+                    scrollView.setVisibility(View.GONE);
+                    notFoundView.setVisibility(View.GONE);
+                    logoImage.setVisibility(View.VISIBLE);
+                }
                 return true;
             }
         });
@@ -260,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         }
         scrollView.setVisibility(View.VISIBLE);
         notFoundView.setVisibility(View.GONE);
+        logoImage.setVisibility(View.GONE);
         VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .getById(parameters)
@@ -270,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
         ((CustomAdapter)listView.getAdapter()).update(Collections.<JSONObject>emptyList(), new SparseArray<JSONObject>());
         scrollView.setVisibility(View.GONE);
         notFoundView.setVisibility(View.VISIBLE);
+        logoImage.setVisibility(View.GONE);
     }
 
     private void initSupportedPubList() {
