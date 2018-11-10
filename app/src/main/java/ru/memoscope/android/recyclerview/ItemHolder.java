@@ -33,7 +33,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final Button prevButton;
     private final Button nextButton;
-    
+
     private Context context;
 
     public ItemHolder(@NonNull View itemView, Context context) {

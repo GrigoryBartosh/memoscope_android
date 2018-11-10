@@ -40,6 +40,7 @@
         <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
     <style name="LRButton">
+        <item name="android:layout_marginTop">5dp</item>
         <item name="android:layout_width">45dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
