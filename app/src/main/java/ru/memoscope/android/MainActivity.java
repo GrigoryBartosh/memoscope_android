@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.common.reflect.Parameter;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -44,6 +45,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Pub> supportedPubList = new ArrayList<>();
     private Set<Integer> supportedPubSet = new HashSet<>();
-    private Set<Integer> subscribedPubSet = new HashSet<>();
     private Set<Integer> pubSet = new HashSet<>();
     private Button fromDateButton;
     private Button toDateButton;
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem mSearch = menu.findItem(R.id.action_search);
 
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        final SearchView mSearchView = (SearchView) mSearch.getActionView();
 
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 sendRequestToServer(query);
-                //fakePost();
+                mSearchView.clearFocus();
                 return true;
             }
 
@@ -238,9 +239,21 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivityTag", "timeFrom=" + timeFrom + ", timeTo=" + timeTo);
         ArrayList<Long> list = new ArrayList<>();
         for (Integer id: pubSet) {
-            list.add((long) id);
+            list.add((long) -id);
         }
-        new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
+        String posts = new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
+        if ("".equals(posts)) {
+            setNoPosts();
+            return;
+        }
+        VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
+        VKApi.wall()
+                .getById(parameters)
+                .executeSyncWithListener(new GetPostsListener());
+    }
+
+    private void setNoPosts() {
+        ((CustomAdapter)listView.getAdapter()).update(Collections.<JSONObject>emptyList(), new SparseArray<JSONObject>());
     }
 
     private void initSupportedPubList() {
@@ -270,28 +283,6 @@ public class MainActivity extends AppCompatActivity {
                                 supportedPubList.add(new Pub(id, name, url));
                                 for (Pub pub: supportedPubList) {
                                     supportedPubSet.add(pub.getId());
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
-        VKApi.groups()
-                .get(parameters)
-                .executeSyncWithListener(new VKRequest.VKRequestListener() {
-                    @Override
-                    public void onComplete(VKResponse response) {
-                        try {
-                            JSONArray groups = response.json
-                                    .getJSONObject("response")
-                                    .getJSONArray("items");
-                            for (int i = 0; i < groups.length(); i++) {
-                                int id = groups.getInt(i);
-                                if (supportedPubSet.contains(id)) {
-                                    subscribedPubSet.add(id);
-                                    Log.d("MainActivityTag", "another id: " + id);
                                 }
                             }
                         } catch (JSONException e) {
@@ -377,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case "Мои": {
-                    pubSet = new HashSet<>(subscribedPubSet);
+                    pubSet = getMySubs();
                     break;
                 }
                 case "Выбор": {
@@ -396,6 +387,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Set<Integer> getMySubs() {
-        return new HashSet<>(Arrays.asList(1));
+        final Set<Integer> subscribedPubSet = new HashSet<>();
+        VKParameters parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
+        VKApi.groups()
+                .get(parameters)
+                .executeSyncWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        try {
+                            JSONArray groups = response.json
+                                    .getJSONObject("response")
+                                    .getJSONArray("items");
+                            for (int i = 0; i < groups.length(); i++) {
+                                int id = groups.getInt(i);
+                                if (supportedPubSet.contains(id)) {
+                                    subscribedPubSet.add(id);
+                                    Log.d("MainActivityTag", "another id: " + id);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        return subscribedPubSet;
     }
 }
