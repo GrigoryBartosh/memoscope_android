@@ -45,6 +45,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -241,10 +242,18 @@ public class MainActivity extends AppCompatActivity {
             list.add((long) -id);
         }
         String posts = new Network(this, host, port).getPosts(query, timeFrom, timeTo, list);
+        if ("".equals(posts)) {
+            setNoPosts();
+            return;
+        }
         VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .getById(parameters)
                 .executeSyncWithListener(new GetPostsListener());
+    }
+
+    private void setNoPosts() {
+        ((CustomAdapter)listView.getAdapter()).update(Collections.<JSONObject>emptyList(), new SparseArray<JSONObject>());
     }
 
     private void initSupportedPubList() {
