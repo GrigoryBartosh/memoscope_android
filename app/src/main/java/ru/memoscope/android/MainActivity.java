@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.common.reflect.Parameter;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Pub> supportedPubList = new ArrayList<>();
     private Set<Integer> supportedPubSet = new HashSet<>();
-    private Set<Integer> subscribedPubSet = new HashSet<>();
     private Set<Integer> pubSet = new HashSet<>();
     private Button fromDateButton;
     private Button toDateButton;
@@ -277,28 +277,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
-        VKApi.groups()
-                .get(parameters)
-                .executeSyncWithListener(new VKRequest.VKRequestListener() {
-                    @Override
-                    public void onComplete(VKResponse response) {
-                        try {
-                            JSONArray groups = response.json
-                                    .getJSONObject("response")
-                                    .getJSONArray("items");
-                            for (int i = 0; i < groups.length(); i++) {
-                                int id = groups.getInt(i);
-                                if (supportedPubSet.contains(id)) {
-                                    subscribedPubSet.add(id);
-                                    Log.d("MainActivityTag", "another id: " + id);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
         pubSet = new HashSet<>(supportedPubSet);
 
     }
@@ -377,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case "Мои": {
-                    pubSet = new HashSet<>(subscribedPubSet);
+                    pubSet = getMySubs();
                     break;
                 }
                 case "Выбор": {
@@ -396,6 +374,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Set<Integer> getMySubs() {
-        return new HashSet<>(Arrays.asList(1));
+        final Set<Integer> subscribedPubSet = new HashSet<>();
+        VKParameters parameters = VKParameters.from(VKApiConst.FILTERS, "publics");
+        VKApi.groups()
+                .get(parameters)
+                .executeSyncWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        try {
+                            JSONArray groups = response.json
+                                    .getJSONObject("response")
+                                    .getJSONArray("items");
+                            for (int i = 0; i < groups.length(); i++) {
+                                int id = groups.getInt(i);
+                                if (supportedPubSet.contains(id)) {
+                                    subscribedPubSet.add(id);
+                                    Log.d("MainActivityTag", "another id: " + id);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        return subscribedPubSet;
     }
 }
