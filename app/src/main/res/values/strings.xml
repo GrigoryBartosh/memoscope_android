@@ -16,5 +16,6 @@
     <string name="host">172.20.36.186</string>
     <string name="next">&#62;</string>
     <string name="prev">&#60;</string>
+    <string name="open_in">Открыть в</string>
     <integer name="port">8801</integer>
 </resources>
