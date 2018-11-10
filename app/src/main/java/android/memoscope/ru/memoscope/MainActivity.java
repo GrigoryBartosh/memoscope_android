@@ -1,9 +1,10 @@
 package android.memoscope.ru.memoscope;
 
 import android.content.Context;
-import android.memoscope.ru.memoscope.utils.Network;
+import android.memoscope.ru.memoscope.recyclerview.CustomAdapter;
 import android.memoscope.ru.memoscope.recyclerview.ShadowVerticalSpaceItemDecorator;
 import android.memoscope.ru.memoscope.recyclerview.VerticalSpaceItemDecorator;
+import android.memoscope.ru.memoscope.utils.Network;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,13 +45,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import android.memoscope.ru.memoscope.recyclerview.CustomAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -214,9 +213,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fakePost() {
-        CustomAdapter adapter = new CustomAdapter(this, fakePosts, fakeGroups);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        ((CustomAdapter)listView.getAdapter()).update(fakePosts, fakeGroups);
     }
 
     private void sendRequestToServer(String query) {
