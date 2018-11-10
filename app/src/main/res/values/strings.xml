@@ -16,5 +16,6 @@
     <string name="host">35.228.53.174</string>
     <string name="next">&#62;</string>
     <string name="prev">&#60;</string>
+    <string name="notfound">Ничего не найдено ¯\\\_(ツ)_/¯</string>
     <integer name="port">8803</integer>
 </resources>

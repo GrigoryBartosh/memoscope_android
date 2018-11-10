@@ -1,7 +1,5 @@
 package ru.memoscope.android;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +24,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.common.reflect.Parameter;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -68,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     private Set<Integer> pubSet = new HashSet<>();
     private Button fromDateButton;
     private Button toDateButton;
+    private NestedScrollView scrollView;
+    private TextView notFoundView;
 
     private final List<JSONObject> fakePosts;
     private final SparseArray<JSONObject> fakeGroups;
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         if (!VKSdk.isLoggedIn())
             VKSdk.login(this, VKScope.WALL);
 
-        NestedScrollView scrollView = findViewById(R.id.scrollView);
+        scrollView = findViewById(R.id.scroll_view);
 
         CustomAdapter adapter = new CustomAdapter(this, fakePosts, fakeGroups);
 
@@ -146,11 +145,16 @@ public class MainActivity extends AppCompatActivity {
 
         fromDateButton = findViewById(R.id.from_date);
         toDateButton = findViewById(R.id.to_date);
+
         fromDateButton.setOnClickListener(new DateButtonClickListener());
-        String currentDate = currentDateString();
-        fromDateButton.setText(currentDate);
+        String weekAgo = weekAgoString();
+        fromDateButton.setText(weekAgo);
+
         toDateButton.setOnClickListener(new DateButtonClickListener());
+        String currentDate = currentDateString();
         toDateButton.setText(currentDate);
+
+        notFoundView = findViewById(R.id.not_found);
 
         initSupportedPubList();
 
@@ -170,6 +174,14 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private String weekAgoString() {
+        long DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date date = new Date();
+        Date pastDate = new Date(date.getTime() - (7 * DAY_IN_MS));
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", getCurrentLocale(this));
+        return dateFormat.format(pastDate);
     }
 
     private String currentDateString() {
@@ -246,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
             setNoPosts();
             return;
         }
+        scrollView.setVisibility(View.VISIBLE);
+        notFoundView.setVisibility(View.GONE);
         VKParameters parameters = VKParameters.from(VKApiConst.POSTS, posts, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .getById(parameters)
@@ -254,6 +268,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void setNoPosts() {
         ((CustomAdapter)listView.getAdapter()).update(Collections.<JSONObject>emptyList(), new SparseArray<JSONObject>());
+        scrollView.setVisibility(View.GONE);
+        notFoundView.setVisibility(View.VISIBLE);
     }
 
     private void initSupportedPubList() {

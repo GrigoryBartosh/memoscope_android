@@ -22,10 +22,10 @@
     </item>
 
     <item
-        android:top="13dp"
-        android:bottom="13dp"
-        android:left="13dp"
-        android:right="13dp">
+        android:top="9dp"
+        android:bottom="9dp"
+        android:left="11dp"
+        android:right="9dp">
         <vector android:height="24dp"
             android:viewportHeight="548.358"
             android:viewportWidth="548.358"

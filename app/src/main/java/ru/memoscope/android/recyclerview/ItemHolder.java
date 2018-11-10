@@ -1,5 +1,6 @@
 package ru.memoscope.android.recyclerview;
 
+import ru.memoscope.android.Pub;
 import ru.memoscope.android.R;
 
 import android.app.Activity;
@@ -84,6 +85,12 @@ public class ItemHolder extends RecyclerView.ViewHolder {
         if (urls == null || urls.size() <= 1) {
             nextButton.setVisibility(View.GONE);
             prevButton.setVisibility(View.GONE);
+        } else {
+            for (int i = 0; i < urls.size(); i++) {
+                Picasso.get()
+                        .load(urls.get(i))
+                        .fetch();
+            }
         }
 
         current = 0;
@@ -109,6 +116,15 @@ public class ItemHolder extends RecyclerView.ViewHolder {
     public void setImageViewPicture() {
         if (urls.size() == 0)
             return;
+
+        prevButton.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.VISIBLE);
+        if (current == 0) {
+            prevButton.setVisibility(View.GONE);
+        }
+        if (current == urls.size() - 1) {
+            nextButton.setVisibility(View.GONE);
+        }
 
         Picasso.get()
                 .load(urls.get(current))
