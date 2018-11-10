@@ -1,5 +1,7 @@
 package ru.memoscope.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -185,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View options = (View)findViewById(R.id.option_layout);
+                View options = findViewById(R.id.option_layout);
                 options.setVisibility(View.VISIBLE);
             }
         });
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                View options = (View)findViewById(R.id.option_layout);
+                View options = findViewById(R.id.option_layout);
                 int vis = hasFocus ? View.VISIBLE : View.GONE;
                 options.setVisibility(vis);
             }

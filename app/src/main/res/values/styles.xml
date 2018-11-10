@@ -23,8 +23,9 @@
         <item name="android:textStyle">bold</item>
     </style>
     <style name="FilterSpinner">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:popupBackground">@drawable/spinner_bg</item>
         <item name="android:background">@drawable/date_button</item>
     </style>
     <style name="PubCheckbox">
@@ -33,5 +34,9 @@
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layoutDirection">rtl</item>
         <item name="android:paddingLeft">5dp</item>
+    </style>
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
     </style>
 </resources>

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/icon_view" />
+        android:id="@+id/icon_view"
+        android:layout_marginRight="10dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:id="@+id/name_view"
         android:layout_toRightOf="@id/icon_view"
         android:layout_toEndOf="@id/icon_view"/>
@@ -30,22 +32,30 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:id="@+id/text_view"
+        android:padding="10sp"
         android:layout_below="@id/icon_view"/>
 
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="250dp"
-        android:maxHeight="450dp"
         android:layout_below="@id/text_view"/>
+
+    <Button
+        android:id="@+id/prev_button"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_view"
+        android:text="@string/prev" />
 
     <Button
         android:id="@+id/like_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/image_view"
-        android:text="like" />
+        android:layout_toRightOf="@id/prev_button"
+        android:layout_toEndOf="@id/prev_button"
+        android:text="@string/like" />
 
 
     <Button
@@ -55,7 +65,7 @@
         android:layout_below="@id/image_view"
         android:layout_toRightOf="@id/like_button"
         android:layout_toEndOf="@id/like_button"
-        android:text="share" />
+        android:text="@string/share" />
 
     <Button
         android:id="@+id/open_vk_button"
@@ -64,6 +74,15 @@
         android:layout_below="@id/image_view"
         android:layout_toRightOf="@id/share_button"
         android:layout_toEndOf="@id/share_button"
-        android:text="open vk" />
+        android:text="@string/open_vk" />
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_view"
+        android:layout_toRightOf="@id/open_vk_button"
+        android:layout_toEndOf="@id/open_vk_button"
+        android:text="@string/next" />
 
 </RelativeLayout>

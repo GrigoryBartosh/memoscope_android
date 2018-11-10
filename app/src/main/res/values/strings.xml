@@ -1,7 +1,7 @@
 <resources>
-    <string name="open_vk">open vk</string>
-    <string name="share">share</string>
-    <string name="like">like</string>
+    <string name="open_vk">o</string>
+    <string name="share">s</string>
+    <string name="like">l</string>
     <string name="app_name">Memoscope</string>
     <string name="to">ПО</string>
     <string name="from">С</string>
@@ -14,5 +14,7 @@
 
     <integer name="com_vk_sdk_AppId">6746791</integer>
     <string name="host">172.20.36.186</string>
+    <string name="next">&#62;</string>
+    <string name="prev">&#60;</string>
     <integer name="port">8801</integer>
 </resources>
