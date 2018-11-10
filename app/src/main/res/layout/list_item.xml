@@ -35,7 +35,7 @@
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="wrap_content"
         android:minHeight="250dp"
         android:maxHeight="450dp"
         android:layout_below="@id/text_view"/>

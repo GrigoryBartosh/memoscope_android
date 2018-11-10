@@ -1,11 +1,16 @@
 package android.memoscope.ru.memoscope;
 
 import android.memoscope.ru.memoscope.utils.Network;
+import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,7 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
@@ -31,9 +41,21 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
+
+    private List<String> supportedPubList = Arrays.asList("1", "2", "3", "4");//new ArrayList<>();
+    private List<String> pubList = new ArrayList<>(supportedPubList);
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -50,10 +72,82 @@ public class MainActivity extends AppCompatActivity {
         listView = scrollView.findViewById(R.id.list_view);
         listView.setNestedScrollingEnabled(true);
 
-        VKParameters parameters = VKParameters.from(VKApiConst.OWNER_ID, -92337511, VKApiConst.COUNT, 10, VKApiConst.EXTENDED, 1);
+        VKParameters parameters = VKParameters.from(VKApiConst.OWNER_ID, -29534144, VKApiConst.COUNT, 100, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .get(parameters)
-                .executeSyncWithListener(new GetPostsListener());
+                .executeSyncWithListener(new MyListener());
+        
+        Button fromDateButton = findViewById(R.id.from_date);
+        Button toDateButton = findViewById(R.id.to_date);
+        fromDateButton.setOnClickListener(new DateButtonClickListener());
+        String currentDate = currentDateString();
+        fromDateButton.setText(currentDate);
+        toDateButton.setOnClickListener(new DateButtonClickListener());
+        toDateButton.setText(currentDate);
+
+
+        Spinner filterSpinner = findViewById(R.id.filter_spinner);
+        filterSpinner.setOnItemSelectedListener(new FilterSelectListener());
+
+        AppBarLayout appBarLayout = findViewById(R.id.appbar);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        if (behavior == null) {
+            params.setBehavior(new AppBarLayout.Behavior());
+            behavior = (AppBarLayout.Behavior) params.getBehavior();
+        }
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                return false;
+            }
+        });
+    }
+
+    private String currentDateString() {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", getCurrentLocale(this));
+        return dateFormat.format(date);
+    }
+
+    class MyListener extends VKRequest.VKRequestListener {
+
+        @Override
+        public void onComplete(VKResponse response) {
+            try {
+                JSONObject responseObject = response.json
+                        .getJSONObject("response");
+                JSONArray posts = responseObject
+                        .getJSONArray("items");
+
+                Log.d("MyListener", posts.toString());
+
+                ArrayList<JSONObject> postsList = new ArrayList<>();
+
+                for (int i = 0; i < posts.length(); i++) {
+                    postsList.add(posts.getJSONObject(i));
+                }
+
+                CustomAdapter adapter = new CustomAdapter(MainActivity.this, postsList);
+
+                JSONArray groups = responseObject
+                        .getJSONArray("groups");
+
+                for (int i = 0; i < groups.length(); i++) {
+                    adapter.addGroup(groups.getJSONObject(i));
+                }
+
+                listView.setAdapter(adapter);
+                //((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
+            } catch (JSONException e) {
+                Log.e("MyListener", e.getMessage());
+            }
+        }
+
+        @Override
+        public void onError(VKError error) {
+            Log.d("MyListener", "onError, code: " + error.errorCode);
+        }
     }
 
     @Override
@@ -147,9 +241,66 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        @Override
         public void onError(VKError error) {
             Log.e("MyListener", "onError, code: " + error.errorCode);
         }
+    }
+
+    private Locale getCurrentLocale(Context context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            return context.getResources().getConfiguration().getLocales().get(0);
+        } else{
+            return context.getResources().getConfiguration().locale;
+        }
+    }
+
+    public class DateButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Button button = (Button) v;
+
+            Button fromButton = findViewById(R.id.from_date);
+            Button toButton = findViewById(R.id.to_date);
+
+            DatePickerFragment newFragment = new DatePickerFragment();
+            newFragment.setButtons(fromButton, toButton, button.getId() == fromButton.getId());
+            newFragment.setLocale(getCurrentLocale(getApplicationContext()));
+            newFragment.show(getSupportFragmentManager(), "date");
+        }
+    }
+
+    public class FilterSelectListener implements AdapterView.OnItemSelectedListener{
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String selected = String.valueOf(((TextView)view).getText());
+            switch (selected) {
+                case "Все": {
+                    pubList = new ArrayList<>(supportedPubList);
+                    break;
+                }
+                case "Мои": {
+                    pubList = getMySubs();
+                    break;
+                }
+                case "Выбор": {
+                    FragmentManager fm = getSupportFragmentManager();
+                    CustomPubsDialogFragment pubsDialogFragment = CustomPubsDialogFragment.newInstance("Some Title");
+                    pubsDialogFragment.setPubs(pubList, supportedPubList);
+                    pubsDialogFragment.show(fm, "fragment_pubs");
+                    break;
+                }
+
+            }
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    }
+
+    private List<String> getMySubs() {
+        List<String> userSubs = Arrays.asList("1", "3");
+        userSubs.retainAll(supportedPubList);
+        return userSubs;
     }
 }

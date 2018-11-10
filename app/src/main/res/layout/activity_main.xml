@@ -24,6 +24,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/appbar"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
         <android.support.v7.widget.Toolbar
@@ -45,10 +46,36 @@
             android:padding="@dimen/activity_horizontal_margin"
             android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Search params go here"/>
+            <android.widget.TextView
+                style="@style/DateText"
+                android:text="@string/from"
+                android:id="@+id/from_text"/>
+
+            <Button
+                style="@style/DateButton"
+                android:id="@+id/from_date"
+                android:layout_toEndOf="@id/from_text"
+                android:layout_toRightOf="@id/from_text"/>
+
+            <android.widget.TextView
+                style="@style/DateText"
+                android:text="@string/to"
+                android:id="@+id/to_text"
+                android:layout_toEndOf="@id/from_date"
+                android:layout_toRightOf="@id/from_date"/>
+            <Button
+                style="@style/DateButton"
+                android:id="@+id/to_date"
+                android:layout_toEndOf="@id/to_text"
+                android:layout_toRightOf="@id/to_text"/>
+
+            <Spinner
+                style="@style/FilterSpinner"
+                android:layout_toEndOf="@id/to_date"
+                android:layout_toRightOf="@id/to_date"
+                android:id="@+id/filter_spinner"
+                android:entries="@array/filter_options"/>
+
         </RelativeLayout>
 
     </android.support.design.widget.AppBarLayout>
