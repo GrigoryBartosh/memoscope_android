@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.memoscope.android.utils.CircleTransform;
@@ -32,6 +33,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
     private final ImageView imageView;
     private final Button prevButton;
     private final Button nextButton;
+    
     private Context context;
 
     public ItemHolder(@NonNull View itemView, Context context) {
@@ -72,6 +74,11 @@ public class ItemHolder extends RecyclerView.ViewHolder {
 
     public void setUrls(List<String> urls) {
         this.urls = urls;
+        if (urls == null || urls.size() <= 1) {
+            nextButton.setVisibility(View.GONE);
+            prevButton.setVisibility(View.GONE);
+        }
+
         current = 0;
         setImageViewPicture();
     }
@@ -98,7 +105,7 @@ public class ItemHolder extends RecyclerView.ViewHolder {
 
         Picasso.get()
                 .load(urls.get(current))
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.load_bg)
                 .into(imageView);
 
     }
