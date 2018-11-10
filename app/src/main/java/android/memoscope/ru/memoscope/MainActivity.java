@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         VKParameters parameters = VKParameters.from(VKApiConst.OWNER_ID, -29534144, VKApiConst.COUNT, 100, VKApiConst.EXTENDED, 1);
         VKApi.wall()
                 .get(parameters)
-                .executeSyncWithListener(new MyListener());
-        
+                .executeSyncWithListener(new GetPostsListener());
+
         Button fromDateButton = findViewById(R.id.from_date);
         Button toDateButton = findViewById(R.id.to_date);
         fromDateButton.setOnClickListener(new DateButtonClickListener());
@@ -108,46 +108,6 @@ public class MainActivity extends AppCompatActivity {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", getCurrentLocale(this));
         return dateFormat.format(date);
-    }
-
-    class MyListener extends VKRequest.VKRequestListener {
-
-        @Override
-        public void onComplete(VKResponse response) {
-            try {
-                JSONObject responseObject = response.json
-                        .getJSONObject("response");
-                JSONArray posts = responseObject
-                        .getJSONArray("items");
-
-                Log.d("MyListener", posts.toString());
-
-                ArrayList<JSONObject> postsList = new ArrayList<>();
-
-                for (int i = 0; i < posts.length(); i++) {
-                    postsList.add(posts.getJSONObject(i));
-                }
-
-                CustomAdapter adapter = new CustomAdapter(MainActivity.this, postsList);
-
-                JSONArray groups = responseObject
-                        .getJSONArray("groups");
-
-                for (int i = 0; i < groups.length(); i++) {
-                    adapter.addGroup(groups.getJSONObject(i));
-                }
-
-                listView.setAdapter(adapter);
-                //((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
-            } catch (JSONException e) {
-                Log.e("MyListener", e.getMessage());
-            }
-        }
-
-        @Override
-        public void onError(VKError error) {
-            Log.d("MyListener", "onError, code: " + error.errorCode);
-        }
     }
 
     @Override
