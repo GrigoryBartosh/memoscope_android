@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private NestedScrollView scrollView;
     private TextView notFoundView;
     private ImageView logoImage;
+    private Toolbar toolbar;
 
     private final List<JSONObject> fakePosts;
     private final SparseArray<JSONObject> fakeGroups;
@@ -99,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.d("MainActivityTag", "onBackPressed");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -142,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 .executeSyncWithListener(new GetPostsListener());
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fromDateButton = findViewById(R.id.from_date);
@@ -199,6 +206,21 @@ public class MainActivity extends AppCompatActivity {
 
         final SearchView mSearchView = (SearchView) mSearch.getActionView();
 
+        mSearch.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Log.d("SearchViewTag", "onExpand");
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Log.d("SearchViewTag", "onCollapse");
+
+                return "".equals(mSearchView.getQuery().toString());
+            }
+        });
+
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 View options = findViewById(R.id.option_layout);
                 int vis = hasFocus ? View.VISIBLE : View.GONE;
                 options.setVisibility(vis);
+                Log.d("SearchViewTag", "onFocusChanged");
             }
         });
         mSearchView.setQueryHint(getString(R.string.search_prompt));
@@ -316,7 +339,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         pubSet = new HashSet<>(supportedPubSet);
-
     }
 
     public class GetPostsListener extends VKRequest.VKRequestListener {
@@ -386,6 +408,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            getSupportedPubList();
             String selected = String.valueOf(((TextView)view).getText());
             switch (selected) {
                 case "Все": {
