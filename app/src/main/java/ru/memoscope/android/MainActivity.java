@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView listView;
 
-    private ArrayList<Pub> supportedPubList = new ArrayList<>();
+    private ArrayList<Pub> supportedPubList = null;
     private Set<Integer> supportedPubSet = new HashSet<>();
     private Set<Integer> pubSet = new HashSet<>();
     private Button fromDateButton;
@@ -158,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
         notFoundView = findViewById(R.id.not_found);
         logoImage = findViewById(R.id.logo);
-
-        initSupportedPubList();
 
         Spinner filterSpinner = findViewById(R.id.filter_spinner);
         filterSpinner.setOnItemSelectedListener(new FilterSelectListener());
@@ -283,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSupportedPubList() {
+        supportedPubList = new ArrayList<>();
         String host = getResources().getString(R.string.host);
         int port = getResources().getInteger(R.integer.port);
         List<Long> groups = new Network(this, host, port).getGroups();
@@ -400,12 +399,19 @@ public class MainActivity extends AppCompatActivity {
                 case "Выбор": {
                     FragmentManager fm = getSupportFragmentManager();
                     CustomPubsDialogFragment pubsDialogFragment = CustomPubsDialogFragment.newInstance("Some Title");
-                    pubsDialogFragment.setPubs(pubSet, supportedPubList);
+                    pubsDialogFragment.setPubs(pubSet, getSupportedPubList());
                     pubsDialogFragment.show(fm, "fragment_pubs");
                     break;
                 }
 
             }
+        }
+
+        private ArrayList<Pub> getSupportedPubList() {
+            if (supportedPubList == null) {
+                initSupportedPubList();
+            }
+            return supportedPubList;
         }
 
         public void onNothingSelected(AdapterView<?> parent) {
